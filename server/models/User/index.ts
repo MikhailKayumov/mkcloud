@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 import { User } from './types';
 
 const User = model<User>(
-  'Index',
+  'User',
   new Schema<User>({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },

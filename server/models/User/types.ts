@@ -1,13 +1,14 @@
 import { ObjectId } from 'mongoose';
 
 type RequirementUserFields = {
+  id: string;
   email: string;
   password: string;
 };
 type NotRequirementUserFields = {
   diskSpace?: number;
   usedSpace?: number;
-  avatar?: { type: string };
+  avatar?: string;
   files?: ObjectId[];
 };
 
