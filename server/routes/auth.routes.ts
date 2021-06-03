@@ -1,17 +1,24 @@
 import { Request, Response, Router } from 'express';
-import { check, validationResult, Result, ValidationError } from 'express-validator';
+import {
+  check,
+  validationResult,
+  Result,
+  ValidationError,
+} from 'express-validator';
 import { hash } from 'bcrypt';
 
 import User from '../models/User';
 
-const router = Router(); //
+const router = Router();
 
 router.post(
   '/registration',
   [
     check('email', 'Uncorrect email').isEmail(),
-    check('password', 'Password must be longer than 3 and shorter than 12')
-      .isLength({ min: 3, max: 12 })
+    check(
+      'password',
+      'Password must be longer than 3 and shorter than 12',
+    ).isLength({ min: 3, max: 12 }),
   ],
   async (req: Request<RegistrationReq>, res: Response<RegistrationRes>) => {
     try {
@@ -19,7 +26,7 @@ router.post(
       if (!validateErrors.isEmpty()) {
         return res.status(400).json({
           message: 'Uncorrect request',
-          errors: validateErrors.array()
+          errors: validateErrors.array(),
         });
       }
 
@@ -29,7 +36,7 @@ router.post(
 
       if (candidate) {
         return res.status(400).json({
-          message: `User with email ${email} already exist`
+          message: `User with email ${email} already exist`,
         });
       }
 
@@ -37,7 +44,7 @@ router.post(
 
       const user = new User({
         email,
-        password: hashPassword
+        password: hashPassword,
       });
       await user.save();
 
@@ -46,7 +53,7 @@ router.post(
       console.log(e);
       res.send({ message: 'Server error' });
     }
-  }
+  },
 );
 
 export default router;

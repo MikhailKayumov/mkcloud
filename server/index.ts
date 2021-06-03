@@ -14,11 +14,11 @@ app.use(express.json());
 app.use('/api/auth', AuthRouter);
 
 const start = async () => {
-  try { //
+  try {
     await mongo.connect(DB_URL, {
       useCreateIndex: true,
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
     });
 
     await app.listen(PORT);
