@@ -8,6 +8,7 @@
   "ignore": [
     ".eslintrc",
     ".eslintignore",
+    ".prettierrc.js",
     "tsconfig.json",
     "package.json",
     "package-lock.json",

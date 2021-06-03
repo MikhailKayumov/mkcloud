@@ -4,13 +4,14 @@ import { hash } from 'bcrypt';
 
 import User from '../models/User';
 
-const router = Router();
+const router = Router(); //
 
 router.post(
   '/registration',
   [
     check('email', 'Uncorrect email').isEmail(),
-    check('password', 'Password must be longer than 3 and shorter than 12').isLength({ min: 3, max: 12 })
+    check('password', 'Password must be longer than 3 and shorter than 12')
+      .isLength({ min: 3, max: 12 })
   ],
   async (req: Request<RegistrationReq>, res: Response<RegistrationRes>) => {
     try {

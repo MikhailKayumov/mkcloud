@@ -1,18 +1,27 @@
 {
+  "env": {
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
   "root": true,
   "parser": "@typescript-eslint/parser",
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "prettier"
   ],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier/@typescript-eslint",
+    "plugin:prettier/recommended"
   ],
   "rules": {
     "indent": ["error", 2],
     "semi": ["error", "always"],
     "array-bracket-spacing": ["error", "never"],
-    "object-curly-spacing": ["error", "always"]
+    "object-curly-spacing": ["error", "always"],
+    "max-len": [ "error", { "code": 80, "tabWidth": 2 } ]
   }
 }

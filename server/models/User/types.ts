@@ -12,5 +12,3 @@ type NotRequirementUserFields = {
 };
 
 export type User = RequirementUserFields & NotRequirementUserFields;
-
-const arr = { 1: 9 };
