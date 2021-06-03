@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import { Schema, model } from 'mongoose';
-import { User } from './types'
+import { User } from './types';
 
 const User = model<User>('Index', new Schema<User>({
   email: { type: String, required: true, unique: true },

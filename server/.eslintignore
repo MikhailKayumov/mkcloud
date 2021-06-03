@@ -1,0 +1,10 @@
+node_modules
+build
+
+tsconfig.json
+package.json
+package-lock.json
+nodemon.json
+
+.eslintrc
+.eslintignore

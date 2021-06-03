@@ -11,11 +11,11 @@ const DB_URL = config.get<string>('dbUrl');
 const app = express();
 
 app.use(express.json());
-app.use('/api/auth', AuthRouter)
+app.use('/api/auth', AuthRouter);
 
 const start = async () => {
   try {
-    const db = await mongo.connect(DB_URL, {
+    await mongo.connect(DB_URL, {
       useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true

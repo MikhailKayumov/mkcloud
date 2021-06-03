@@ -1,0 +1,19 @@
+{
+  "watch": [
+    "config/**/*",
+    "models/**/*",
+    "routes/**/*",
+    "index.ts"
+  ],
+  "ignore": [
+    ".eslintrc",
+    ".eslintignore",
+    "tsconfig.json",
+    "package.json",
+    "package-lock.json",
+    "node_modules"
+  ],
+  "events": {
+    "start": "npm run lint"
+  }
+}

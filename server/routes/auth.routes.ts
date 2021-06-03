@@ -29,7 +29,7 @@ router.post(
       if (candidate) {
         return res.status(400).json({
           message: `User with email ${email} already exist`
-        })
+        });
       }
 
       const hashPassword = await hash(password, 10);
