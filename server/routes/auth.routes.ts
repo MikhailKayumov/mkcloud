@@ -69,7 +69,7 @@ router.post('/login', async (req: LoginReq, res: LoginRes) => {
     }
 
     const token = sign({ id: user.id }, config.get('secretKey'), {
-      expiresIn: '30h',
+      expiresIn: '30m',
     });
 
     return res.json({
