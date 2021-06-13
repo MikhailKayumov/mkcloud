@@ -1,0 +1,44 @@
+@use '../../utils/styles/_colors' as c;
+
+.registration {
+  width: 500px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 30px;
+  align-self: center;
+  margin-top: 100px;
+
+  &__header {
+    font-size: 30px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+
+  input {
+    width: 100%;
+    margin: 8px 0;
+    transition: transform 0.14s ease-in-out;
+    &:hover, &:focus {
+      transform: scale(1.01);
+    }
+  }
+
+  &__btn {
+    border: none;
+    background-color: c.$font-color;
+    border-radius: 4px;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 8px 16px;
+    margin-top: 24px;
+    align-self: flex-end;
+    transition: background-color 0.21s ease-out;
+    cursor: pointer;
+    &:hover {
+      background-color: #4d5d75;
+    }
+    &:active {
+      background-color: c.$font-color;
+    }
+  }
+}

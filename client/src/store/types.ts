@@ -1,11 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit/src/createAction';
+import { UserState } from './user/types';
 
-export type UserState = {
-  currentUser: object;
-  isAuth: boolean;
-}
-
-export type FileState = {};
+export type FileState = unknown;
 
 export type ApplicationState = {
   user: UserState;
@@ -14,7 +10,5 @@ export type ApplicationState = {
 
 export type ReducerFunction<S, P> = (
   state: S,
-  payload: PayloadAction<P>
+  payload: PayloadAction<P>,
 ) => void;
-
-export type UserReducerFunction<T = any> = ReducerFunction<UserState, T>;

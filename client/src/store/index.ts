@@ -1,14 +1,18 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { ApplicationState } from './types';
+import { useDispatch as reduxDispatch } from 'react-redux';
 
-import { userReducer } from './user'
-import { fileReducer } from './file'
+import { ApplicationState } from './types';
+import { userReducer } from './user';
+import { fileReducer } from './file';
 
 const store = configureStore<ApplicationState>({
   reducer: {
     user: userReducer,
-    file: fileReducer
-  }
+    file: fileReducer,
+  },
 });
+
+export type AppDispatch = typeof store.dispatch;
+export const useDispatch = (): AppDispatch => reduxDispatch<AppDispatch>();
 
 export default store;

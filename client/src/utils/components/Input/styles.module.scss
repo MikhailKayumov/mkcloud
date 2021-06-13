@@ -1,0 +1,9 @@
+@use '../../styles/colors' as c;
+
+.input {
+  padding: 8px 16px;
+  border: c.$font-color solid;
+  border-width: 0 0 3px 0;
+  background-color: transparent;
+  outline: none;
+}
