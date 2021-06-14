@@ -1,9 +1,10 @@
-import { Router } from 'express';
+import { Request, Router } from 'express';
 import { check, validationResult, Result } from 'express-validator';
 import { compareSync, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import config from 'config';
 import User from '../models/User';
+import { checkToken } from '../middleware/auth.middleware';
 
 import { LoginReq, LoginRes, RegistrationReq, RegistrationRes } from './types';
 
@@ -15,8 +16,8 @@ router.post(
     check('email', 'Uncorrect email').isEmail(),
     check(
       'password',
-      'Password must be longer than 3 and shorter than 12',
-    ).isLength({ min: 3, max: 12 }),
+      'Password must be longer than 3 and shorter than 12'
+    ).isLength({ min: 3, max: 12 })
   ],
   async (req: RegistrationReq, res: RegistrationRes) => {
     try {
@@ -24,7 +25,7 @@ router.post(
       if (!validateErrors.isEmpty()) {
         return res.status(400).json({
           message: 'Uncorrect request',
-          errors: validateErrors.array(),
+          errors: validateErrors.array()
         });
       }
 
@@ -34,7 +35,7 @@ router.post(
 
       if (candidate) {
         return res.status(400).json({
-          message: `User with email ${email} already exist`,
+          message: `User with email ${email} already exist`
         });
       }
 
@@ -42,7 +43,7 @@ router.post(
 
       const user = new User({
         email,
-        password: hashPassword,
+        password: hashPassword
       });
       await user.save();
 
@@ -51,7 +52,7 @@ router.post(
       console.log(e);
       res.send({ message: 'Server error' });
     }
-  },
+  }
 );
 
 router.post('/login', async (req: LoginReq, res: LoginRes) => {
@@ -69,7 +70,7 @@ router.post('/login', async (req: LoginReq, res: LoginRes) => {
     }
 
     const token = sign({ id: user.id }, config.get('secretKey'), {
-      expiresIn: '30m',
+      expiresIn: '30m'
     });
 
     return res.json({
@@ -80,13 +81,45 @@ router.post('/login', async (req: LoginReq, res: LoginRes) => {
         diskSpace: user.diskSpace || 0,
         usedSpace: user.usedSpace || 0,
         avatar: user.avatar || '',
-        files: user.files || [],
-      },
+        files: user.files || []
+      }
     });
   } catch (e) {
     console.log(e);
     res.send({ message: 'Server error' });
   }
 });
+
+router.get(
+  '/auth',
+  checkToken,
+  async (req: Request<{ userId: string }>, res: LoginRes) => {
+    try {
+      const user = await User.findOne({ _id: req.params.userId });
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      const token = sign({ id: user.id }, config.get('secretKey'), {
+        expiresIn: '30m'
+      });
+
+      return res.json({
+        token,
+        user: {
+          id: user.id,
+          email: user.email,
+          diskSpace: user.diskSpace || 0,
+          usedSpace: user.usedSpace || 0,
+          avatar: user.avatar || '',
+          files: user.files || []
+        }
+      });
+    } catch (e) {
+      console.log(e);
+      res.send({ message: 'Server error' });
+    }
+  }
+);
 
 export default router;

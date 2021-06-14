@@ -5,20 +5,24 @@ import config from 'config';
 // routes
 import AuthRouter from './routes/auth.routes';
 
+import { cors } from './middleware/cors.middleware';
+import { apiPath } from './utils/apiPath';
+
 const PORT = config.get<number>('serverPort');
 const DB_URL = config.get<string>('dbUrl');
 
 const app = express();
 
+app.use(cors);
 app.use(express.json());
-app.use('/api/auth', AuthRouter);
+app.use(apiPath('auth'), AuthRouter);
 
 const start = async () => {
   try {
     await mongo.connect(DB_URL, {
       useCreateIndex: true,
       useNewUrlParser: true,
-      useUnifiedTopology: true,
+      useUnifiedTopology: true
     });
 
     await app.listen(PORT);
