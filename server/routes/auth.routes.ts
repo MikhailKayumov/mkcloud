@@ -50,7 +50,7 @@ router.post(
       });
       await user.save();
 
-      const file = new File({ name: user._id, type: 'dir', user: user._id });
+      const file = new File({ name: user.id, type: 'dir', user: user.id });
       await FileService.createDir(file);
 
       return res.json({ message: 'Index was created' });
@@ -86,8 +86,7 @@ router.post('/login', async (req: LoginReq, res: LoginRes) => {
         email: user.email,
         diskSpace: user.diskSpace || 0,
         usedSpace: user.usedSpace || 0,
-        avatar: user.avatar || '',
-        files: user.files || []
+        avatar: user.avatar || ''
       }
     });
   } catch (e) {
@@ -117,8 +116,7 @@ router.get(
           email: user.email,
           diskSpace: user.diskSpace || 0,
           usedSpace: user.usedSpace || 0,
-          avatar: user.avatar || '',
-          files: user.files || []
+          avatar: user.avatar || ''
         }
       });
     } catch (e) {

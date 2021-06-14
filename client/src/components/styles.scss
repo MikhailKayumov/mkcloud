@@ -32,8 +32,9 @@ textarea, input, button {
   width: 100%;
 }
 
-#wrap {
+.wrap {
   max-width: 1140px;
+  margin: 0 auto;
 }
 
 .content-loader {

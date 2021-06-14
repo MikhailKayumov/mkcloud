@@ -2,6 +2,10 @@
   "watch": [
     "config/**/*",
     "models/**/*",
+    "controllers/**/*",
+    "middleware/**/*",
+    "services/**/*",
+    "utils/**/*",
     "routes/**/*",
     "index.ts"
   ],

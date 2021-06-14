@@ -1,0 +1,22 @@
+@use '../../../utils/styles/_colors' as c;
+
+.filelist {
+  margin: 20px 0;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 4fr repeat(4, 1fr);
+    border-bottom: solid 2px c.$font-color;
+  }
+  &__name {
+    grid-column-start: 2;
+  }
+  &__date {
+    grid-column-start: 5;
+    justify-self: center;
+  }
+  &__size {
+    grid-column-start: 6;
+    justify-self: center;
+  }
+}

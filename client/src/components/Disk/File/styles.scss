@@ -1,0 +1,27 @@
+@use '../../../utils/styles/_colors' as c;
+
+.file {
+  margin: 10px 0;
+  display: grid;
+  grid-template-columns: 1fr 4fr repeat(4, 1fr);
+  border-bottom: solid 2px c.$font-color;
+  align-items: center;
+  transition: transform 0.16s ease-in;
+  &:hover {
+    transform: scale(1.02);
+  }
+  &__img {
+    justify-self: center;
+  }
+  &__name {
+    grid-column-start: 2;
+  }
+  &__date {
+    grid-column-start: 5;
+    justify-self: center;
+  }
+  &__size {
+    grid-column-start: 6;
+    justify-self: center;
+  }
+}

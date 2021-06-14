@@ -8,8 +8,10 @@ import { userThunks } from 'store/user/extraActions';
 
 import { FlexBox } from 'utils/components/FlexBox';
 import { Navbar } from './Navbar';
-import { Registration } from './Auth/Registration';
+import { Loader } from './Loader';
+import { Disk } from './Disk';
 import { Login } from './Auth/Login';
+import { Registration } from './Auth/Registration';
 
 import './styles.scss';
 
@@ -29,7 +31,10 @@ const App: React.FC = (): JSX.Element => {
       <Redirect to="/login" />
     </Switch>
   ) : (
-    <h1>Hello</h1>
+    <Switch>
+      <Route exact path="/" component={Disk} />
+      <Redirect to="/" />
+    </Switch>
   );
 
   return (
@@ -37,18 +42,7 @@ const App: React.FC = (): JSX.Element => {
       <div id="app">
         <Navbar />
         <FlexBox direction="column" className="wrap">
-          {isLoading ? (
-            <FlexBox justify="center" className="content-loader">
-              <div className="content-loader__content">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-            </FlexBox>
-          ) : (
-            content
-          )}
+          {isLoading ? <Loader /> : content}
         </FlexBox>
       </div>
     </BrowserRouter>

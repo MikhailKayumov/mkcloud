@@ -1,11 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ActionReducerMapBuilder } from '@reduxjs/toolkit/src/mapBuilders';
 import API from 'utils/API';
 
-import { AuthData, AuthServerRequest } from './types';
+import { AuthData, AuthServerRequest, UserExtraReducerFunction } from './types';
 import { stateName } from './constants';
 import { actions } from './actions';
-import { UserState } from './types';
 import { delay } from '../../utils';
 
 const registration = createAsyncThunk<Promise<unknown>, AuthData>(
@@ -58,13 +56,7 @@ const auth = createAsyncThunk<AuthServerRequest>(
   `${stateName}/auth`,
   async () => {
     await delay(1000);
-
-    const result = await API.get('auth/auth', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('jwt')}`
-      }
-    });
-
+    const result = await API.get('auth/auth');
     return result.data;
   }
 );
@@ -75,9 +67,7 @@ export const userThunks = {
   auth
 };
 
-export const extraActions = (
-  builder: ActionReducerMapBuilder<UserState>
-): void => {
+export const extraActions: UserExtraReducerFunction = (builder): void => {
   builder
     .addCase(login.pending, (state) => {
       state.loading = true;

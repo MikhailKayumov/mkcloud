@@ -1,7 +1,12 @@
-import { ApplicationState, FileState } from '../types';
+import { ApplicationState } from '../types';
+import { File } from './types';
 
-const fileState = (state: ApplicationState): FileState => state.file;
+const currentDir = (state: ApplicationState): string =>
+  state.file.currentDir || '';
+
+const files = (state: ApplicationState): File[] => state.file.files;
 
 export const selectors = {
-  fileState
+  currentDir,
+  files
 };

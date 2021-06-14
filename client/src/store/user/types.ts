@@ -1,10 +1,9 @@
-import { ReducerFunction } from '../types';
+import { ExtraReducerFunction, ReducerFunction } from '../types';
 
 export type User = {
   id: string;
   email: string;
   avatar: string;
-  files: unknown[];
   diskSpace: number;
   usedSpace: number;
 };
@@ -16,6 +15,8 @@ export type UserState = {
 };
 
 export type UserReducerFunction<P = void> = ReducerFunction<UserState, P>;
+
+export type UserExtraReducerFunction = ExtraReducerFunction<UserState>;
 
 export type AuthData = {
   email: string;

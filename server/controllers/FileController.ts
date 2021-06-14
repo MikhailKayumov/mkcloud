@@ -16,12 +16,12 @@ class FileController {
       const { userId: user } = req.params;
 
       const dir = new File({ name, type, user, parent });
-      const parentDir = await File.findOne({ _id: parent });
+      const parentDir = await File.findOne({ id: parent });
       if (parentDir) {
         dir.path = path.join(parentDir.path, dir.name);
         await FileService.createDir(dir);
 
-        parentDir.childs.push(dir._id);
+        parentDir.childs.push(dir.id);
         parentDir.save();
       } else {
         dir.path = name;
@@ -45,8 +45,20 @@ class FileController {
       const parent = req.query.parent;
 
       const files = await File.find({ user, parent } as FilterQuery<FileType>);
-      console.log({ user, parent, files });
-      return res.status(200).json(files);
+      return res.status(200).json(
+        files.map((file) => ({
+          id: file.id,
+          type: file.type,
+          name: file.name,
+          size: file.size,
+          path: file.path,
+          accessLink: file.accessLink || '',
+          user: file.user,
+          parent: file.parent,
+          childs: file.childs,
+          date: file.date
+        }))
+      );
     } catch (e) {
       console.log(e.message);
       return res.status(500).json({ message: e.message });

@@ -19,5 +19,6 @@ export type RegistrationRes = Response<MessageRespone>;
 export type LoginReq = RegistrationReq;
 
 export type LoginRes = Response<
-  { token: string; user: Required<Omit<User, 'password'>> } | MessageRespone
+  | { token: string; user: Required<Omit<User, 'password' | 'files'>> }
+  | MessageRespone
 >;

@@ -5,11 +5,12 @@ import { File as FileType } from './types';
 const File = model<FileType>(
   'File',
   new Schema<FileType>({
-    name: { type: String, required: true },
     type: { type: String, required: true },
-    accessLink: { type: String },
-    size: { type: Number, default: 0 },
+    name: { type: String, required: true },
     path: { type: String, default: '' },
+    size: { type: Number, default: 0 },
+    date: { type: Date, default: Date.now() },
+    accessLink: { type: String },
     user: { type: ObjectId, ref: 'User' },
     parent: { type: ObjectId, ref: 'File' },
     childs: [{ type: ObjectId, ref: 'File' }]

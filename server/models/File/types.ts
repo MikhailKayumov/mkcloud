@@ -7,6 +7,7 @@ export type File = {
   accessLink: string;
   size: number;
   path: string;
+  date: Date;
   user: ObjectId;
   parent: ObjectId;
   childs: ObjectId[];

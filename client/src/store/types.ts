@@ -1,7 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit/src/createAction';
 import { UserState } from './user/types';
-
-export type FileState = unknown;
+import { FileState } from './file/types';
+import { ActionReducerMapBuilder } from '@reduxjs/toolkit/src/mapBuilders';
 
 export type ApplicationState = {
   user: UserState;
@@ -11,4 +11,8 @@ export type ApplicationState = {
 export type ReducerFunction<S, P = void> = (
   state: S,
   payload: PayloadAction<P>
+) => void;
+
+export type ExtraReducerFunction<S> = (
+  builder: ActionReducerMapBuilder<S>
 ) => void;

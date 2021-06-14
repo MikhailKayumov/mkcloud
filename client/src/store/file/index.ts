@@ -1,14 +1,17 @@
-import { createSlice, SliceCaseReducers } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { actions } from './actions';
+import { extraActions, thunks } from './extraActions';
 import { selectors } from './selectors';
-import { FileState } from '../types';
+import { initialState, stateName } from './constants';
 
-export const fileSlice = createSlice<FileState, SliceCaseReducers<FileState>>({
-  name: 'file',
-  initialState: {},
-  reducers: actions
+export const fileSlice = createSlice({
+  name: stateName,
+  initialState,
+  reducers: actions,
+  extraReducers: extraActions
 });
 
 export const fileReducer = fileSlice.reducer;
 export const fileActions = fileSlice.actions;
 export const fileSelectors = selectors;
+export const fileThunks = thunks;
