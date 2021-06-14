@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb';
 import { Schema, model } from 'mongoose';
-import { User } from './types';
+import { User as UserType } from './types';
 
-const User = model<User>(
+const User = model<UserType>(
   'User',
-  new Schema<User>({
+  new Schema<UserType>({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     diskSpace: { type: Number, default: 1024 ** 3 * 10 },
@@ -15,3 +15,5 @@ const User = model<User>(
 );
 
 export default User;
+
+export { UserType };

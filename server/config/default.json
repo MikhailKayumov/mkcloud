@@ -2,5 +2,6 @@
   "serverPort": 3030,
   "dbUrl": "mongodb://localhost:27017/cloud-disk",
   "secretKey": "mkmind",
-  "baseAPIPath": "/api/v1"
+  "baseAPIPath": "/api/v1",
+  "userFileDir": "userFiles"
 }

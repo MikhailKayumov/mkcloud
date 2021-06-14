@@ -4,7 +4,9 @@ import API from 'utils/API';
 
 import { AuthData, AuthServerRequest } from './types';
 import { stateName } from './constants';
+import { actions } from './actions';
 import { UserState } from './types';
+import { delay } from '../../utils';
 
 const registration = createAsyncThunk<Promise<unknown>, AuthData>(
   `${stateName}/registration`,
@@ -55,6 +57,8 @@ const login = createAsyncThunk<AuthServerRequest, AuthData>(
 const auth = createAsyncThunk<AuthServerRequest>(
   `${stateName}/auth`,
   async () => {
+    await delay(1000);
+
     const result = await API.get('auth/auth', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('jwt')}`
@@ -75,19 +79,18 @@ export const extraActions = (
   builder: ActionReducerMapBuilder<UserState>
 ): void => {
   builder
-    .addCase(login.fulfilled, (state, { payload }) => {
-      state.currentUser = payload.user;
-      state.isAuth = true;
-      localStorage.setItem('jwt', payload.token);
+    .addCase(login.pending, (state) => {
+      state.loading = true;
     })
-    .addCase(auth.fulfilled, (state, { payload }) => {
-      state.currentUser = payload.user;
-      state.isAuth = true;
-      localStorage.setItem('jwt', payload.token);
+    .addCase(login.fulfilled, actions.setUser)
+    .addCase(auth.pending, (state) => {
+      state.loading = true;
     })
+    .addCase(auth.fulfilled, actions.setUser)
     .addCase(auth.rejected, (state) => {
       state.currentUser = null;
       state.isAuth = false;
+      state.loading = false;
       localStorage.removeItem('jwt');
     });
 };

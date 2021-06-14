@@ -3,7 +3,10 @@ import { check, validationResult, Result } from 'express-validator';
 import { compareSync, hash } from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import config from 'config';
+
 import User from '../models/User';
+import File from '../models/File';
+import FileService from '../services/FileService';
 import { checkToken } from '../middleware/auth.middleware';
 
 import { LoginReq, LoginRes, RegistrationReq, RegistrationRes } from './types';
@@ -46,6 +49,9 @@ router.post(
         password: hashPassword
       });
       await user.save();
+
+      const file = new File({ name: user._id, type: 'dir', user: user._id });
+      await FileService.createDir(file);
 
       return res.json({ message: 'Index was created' });
     } catch (e) {

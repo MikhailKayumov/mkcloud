@@ -4,6 +4,7 @@ import config from 'config';
 
 // routes
 import AuthRouter from './routes/auth.routes';
+import FileRouter from './routes/file.routes';
 
 import { cors } from './middleware/cors.middleware';
 import { apiPath } from './utils/apiPath';
@@ -16,6 +17,7 @@ const app = express();
 app.use(cors);
 app.use(express.json());
 app.use(apiPath('auth'), AuthRouter);
+app.use(apiPath('file'), FileRouter);
 
 const start = async () => {
   try {

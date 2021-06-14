@@ -12,6 +12,7 @@ export type User = {
 export type UserState = {
   currentUser: User | null;
   isAuth: boolean;
+  loading: boolean;
 };
 
 export type UserReducerFunction<P = void> = ReducerFunction<UserState, P>;
