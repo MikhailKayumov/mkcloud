@@ -8,7 +8,7 @@ export type ApplicationState = {
   file: FileState;
 };
 
-export type ReducerFunction<S, P> = (
+export type ReducerFunction<S, P = void> = (
   state: S,
-  payload: PayloadAction<P>,
+  payload: PayloadAction<P>
 ) => void;

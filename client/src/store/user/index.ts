@@ -1,16 +1,15 @@
-import { SliceCaseReducers, createSlice } from '@reduxjs/toolkit';
-import { UserState } from './types';
+import { createSlice } from '@reduxjs/toolkit';
 
 import { actions } from './actions';
 import { selectors } from './selectors';
-// import { extraActions } from './extraActions';
+import { extraActions } from './extraActions';
 import { initialState, stateName } from './constants';
 
-const userSlice = createSlice<UserState, SliceCaseReducers<UserState>>({
+const userSlice = createSlice({
   name: stateName,
   initialState,
   reducers: actions,
-  // extraReducers: extraActions,
+  extraReducers: extraActions
 });
 
 export const userReducer = userSlice.reducer;

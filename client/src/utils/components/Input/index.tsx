@@ -10,7 +10,7 @@ export const Input: React.FC<InputProps> = ({
   type = 'text',
   placeholder = '',
   name = '',
-  onChange = undefined,
+  onChange = undefined
 }): JSX.Element => {
   return (
     <input

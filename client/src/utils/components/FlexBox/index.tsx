@@ -3,7 +3,7 @@ import React, {
   PropsWithChildren,
   PropsWithoutRef,
   RefAttributes,
-  useMemo,
+  useMemo
 } from 'react';
 
 import { FlexBoxProps, Style } from './types';
@@ -23,9 +23,9 @@ export const FlexBox: ForwardRefExoticComponent<
       shrink = 1,
       basis = 'auto',
       children,
-      className,
+      className
     },
-    ref,
+    ref
   ): JSX.Element => {
     const style = useMemo<Style>(
       () => ({
@@ -35,9 +35,9 @@ export const FlexBox: ForwardRefExoticComponent<
         justifyContent: justify,
         alignItems,
         alignContent,
-        flex: `${grow} ${shrink} ${basis}`,
+        flex: `${grow} ${shrink} ${basis}`
       }),
-      [alignContent, alignItems, basis, direction, grow, justify, shrink, wrap],
+      [alignContent, alignItems, basis, direction, grow, justify, shrink, wrap]
     );
 
     return (
@@ -45,5 +45,5 @@ export const FlexBox: ForwardRefExoticComponent<
         {children}
       </div>
     );
-  },
+  }
 );

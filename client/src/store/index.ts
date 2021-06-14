@@ -8,8 +8,8 @@ import { fileReducer } from './file';
 const store = configureStore<ApplicationState>({
   reducer: {
     user: userReducer,
-    file: fileReducer,
-  },
+    file: fileReducer
+  }
 });
 
 export type AppDispatch = typeof store.dispatch;

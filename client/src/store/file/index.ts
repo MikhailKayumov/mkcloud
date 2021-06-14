@@ -6,7 +6,7 @@ import { FileState } from '../types';
 export const fileSlice = createSlice<FileState, SliceCaseReducers<FileState>>({
   name: 'file',
   initialState: {},
-  reducers: actions,
+  reducers: actions
 });
 
 export const fileReducer = fileSlice.reducer;

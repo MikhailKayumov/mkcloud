@@ -1,9 +1,11 @@
 import { UserReducerFunction } from './types';
 
-const setAuth: UserReducerFunction<boolean> = (state, { payload }) => {
-  state.isAuth = payload;
+const logout: UserReducerFunction = (state) => {
+  state.currentUser = null;
+  state.isAuth = false;
+  localStorage.removeItem('jwt');
 };
 
 export const actions = {
-  setAuth,
+  logout
 };
