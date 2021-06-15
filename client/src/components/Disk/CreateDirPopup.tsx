@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
@@ -11,6 +11,8 @@ export const CreateDirPopup: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const currentDir = useSelector(fileSelectors.currentDir);
   const [dirName, setDirName] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const popupWrapperRef = useRef<HTMLDivElement>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDirName(e.target.value);
@@ -35,8 +37,16 @@ export const CreateDirPopup: React.FC = (): JSX.Element => {
     dispatch(fileActions.toggleCreateDirPopupDisplay(false));
   };
 
+  const closeOnWrapper = (e: React.MouseEvent) => {
+    if ((e.target as Node).contains(popupWrapperRef.current)) close();
+  };
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [inputRef]);
+
   return (
-    <FlexBox justify="center" alignItems="center" className="popup">
+    <div ref={popupWrapperRef} className="popup" onClick={closeOnWrapper}>
       <FlexBox direction="column" className="popup__content">
         <FlexBox
           alignItems="center"
@@ -50,6 +60,7 @@ export const CreateDirPopup: React.FC = (): JSX.Element => {
         </FlexBox>
         <FlexBox direction="column">
           <Input
+            ref={inputRef}
             placeholder="Введите название папки"
             value={dirName}
             onChange={onChange}
@@ -59,6 +70,6 @@ export const CreateDirPopup: React.FC = (): JSX.Element => {
           </button>
         </FlexBox>
       </FlexBox>
-    </FlexBox>
+    </div>
   );
 };

@@ -62,10 +62,20 @@ export const extraActions: UserExtraReducerFunction = (builder): void => {
       state.loading = true;
     })
     .addCase(login.fulfilled, actions.setUser)
-    .addCase(login.rejected, actions.logout)
+    .addCase(login.rejected, (state) => {
+      state.currentUser = null;
+      state.isAuth = false;
+      state.loading = false;
+      localStorage.removeItem('jwt');
+    })
     .addCase(auth.pending, (state) => {
       state.loading = true;
     })
     .addCase(auth.fulfilled, actions.setUser)
-    .addCase(auth.rejected, actions.logout);
+    .addCase(auth.rejected, (state) => {
+      state.currentUser = null;
+      state.isAuth = false;
+      state.loading = false;
+      localStorage.removeItem('jwt');
+    });
 };

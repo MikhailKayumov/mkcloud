@@ -23,9 +23,21 @@ const setCurrentDir: FileReducerFunction<string | null> = (
   state.currentDir = payload;
 };
 
+const pushToStack: FileReducerFunction<string> = (state, { payload }) => {
+  state.dirStack.push(payload);
+};
+
+const popFromStack: FileReducerFunction = (state) => {
+  if (state.dirStack.length) {
+    state.currentDir = state.dirStack.pop() || null;
+  }
+};
+
 export const actions = {
   setFiles,
   addFile,
   setCurrentDir,
-  toggleCreateDirPopupDisplay
+  toggleCreateDirPopupDisplay,
+  pushToStack,
+  popFromStack
 };

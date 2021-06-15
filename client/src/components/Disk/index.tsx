@@ -24,10 +24,16 @@ export const Disk: React.FC = (): JSX.Element => {
     dispatch(fileActions.toggleCreateDirPopupDisplay(true));
   };
 
+  const bakcDir = () => {
+    dispatch(fileActions.popFromStack());
+  };
+
   return (
     <div className="disk">
       <FlexBox alignItems="center" className="disk__btns">
-        <button className="disk__btn disk__btnBack">Назад</button>
+        <button className="disk__btn disk__btnBack" onClick={bakcDir}>
+          Назад
+        </button>
         <button className="disk__btn disk__btnCreate" onClick={createDir}>
           Создать папку
         </button>
