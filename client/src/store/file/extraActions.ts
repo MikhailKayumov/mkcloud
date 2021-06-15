@@ -12,10 +12,25 @@ const getFiles = createAsyncThunk<File[], string>(
   }
 );
 
+const createDir = createAsyncThunk<File, { parent: string; name: string }>(
+  `${stateName}/createDir`,
+  async ({ parent, name }) => {
+    const result = await API.post('file', {
+      parent: parent || null,
+      name,
+      type: 'dir'
+    });
+    return result.data;
+  }
+);
+
 export const thunks = {
-  getFiles
+  getFiles,
+  createDir
 };
 
 export const extraActions: FileExtraReducerFunction = (builder) => {
-  builder.addCase(getFiles.fulfilled, actions.setFiles);
+  builder
+    .addCase(getFiles.fulfilled, actions.setFiles)
+    .addCase(createDir.fulfilled, actions.addFile);
 };

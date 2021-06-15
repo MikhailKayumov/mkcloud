@@ -6,7 +6,11 @@ const currentDir = (state: ApplicationState): string =>
 
 const files = (state: ApplicationState): File[] => state.file.files;
 
+const popupShow = (state: ApplicationState): boolean =>
+  state.file.createDirPopupDisplay;
+
 export const selectors = {
   currentDir,
-  files
+  files,
+  popupShow
 };

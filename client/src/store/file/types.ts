@@ -16,6 +16,7 @@ export type File = {
 export type FileState = {
   files: File[];
   currentDir: string | null;
+  createDirPopupDisplay: boolean;
 };
 
 export type FileReducerFunction<P = void> = ReducerFunction<FileState, P>;

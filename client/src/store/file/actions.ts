@@ -4,6 +4,18 @@ const setFiles: FileReducerFunction<File[]> = (state, { payload }) => {
   state.files = payload;
 };
 
+const addFile: FileReducerFunction<File> = (state, { payload }) => {
+  state.files.push(payload);
+  state.createDirPopupDisplay = false;
+};
+
+const toggleCreateDirPopupDisplay: FileReducerFunction<boolean> = (
+  state,
+  { payload }
+) => {
+  state.createDirPopupDisplay = payload;
+};
+
 const setCurrentDir: FileReducerFunction<string | null> = (
   state,
   { payload }
@@ -13,5 +25,7 @@ const setCurrentDir: FileReducerFunction<string | null> = (
 
 export const actions = {
   setFiles,
-  setCurrentDir
+  addFile,
+  setCurrentDir,
+  toggleCreateDirPopupDisplay
 };

@@ -16,7 +16,8 @@ class FileController {
       const { userId: user } = req.params;
 
       const dir = new File({ name, type, user, parent });
-      const parentDir = await File.findOne({ id: parent });
+      const parentDir = await File.findOne({ _id: parent });
+
       if (parentDir) {
         dir.path = path.join(parentDir.path, dir.name);
         await FileService.createDir(dir);
@@ -29,7 +30,19 @@ class FileController {
       }
 
       await dir.save();
-      return res.json(dir);
+
+      return res.json({
+        id: dir.id,
+        type: dir.type,
+        name: dir.name,
+        size: dir.size,
+        path: dir.path,
+        accessLink: dir.accessLink || '',
+        user: dir.user,
+        parent: dir.parent,
+        childs: dir.childs,
+        date: dir.date
+      });
     } catch (e) {
       console.log(e.message);
       return res.status(400).json({ message: e.message });

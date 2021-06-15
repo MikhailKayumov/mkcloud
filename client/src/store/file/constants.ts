@@ -4,5 +4,6 @@ export const stateName = 'file';
 
 export const initialState: FileState = {
   files: [],
-  currentDir: null
+  currentDir: null,
+  createDirPopupDisplay: false
 };
