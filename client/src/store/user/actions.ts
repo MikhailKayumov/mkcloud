@@ -10,9 +10,10 @@ const setUser: UserReducerFunction<AuthServerRequest> = (
   localStorage.setItem('jwt', payload.token);
 };
 
-const logout: UserReducerFunction = (state) => {
+const logout: UserReducerFunction<unknown> = (state) => {
   state.currentUser = null;
   state.isAuth = false;
+  state.loading = false;
   localStorage.removeItem('jwt');
 };
 

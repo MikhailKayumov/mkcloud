@@ -32,23 +32,12 @@ const registration = createAsyncThunk<Promise<unknown>, AuthData>(
 const login = createAsyncThunk<AuthServerRequest, AuthData>(
   `${stateName}/login`,
   async ({ email, password }) => {
-    try {
-      const result = await API.post('auth/login', {
-        email,
-        password
-      });
+    const result = await API.post('auth/login', {
+      email,
+      password
+    });
 
-      return result.data;
-    } catch (e) {
-      const { message, errors } = e.response.data;
-
-      let msg = message;
-      if (errors && Array.isArray(errors)) {
-        msg += `\n${errors.map((error) => error.msg).join('\n')}`;
-      }
-
-      alert(msg);
-    }
+    return result.data;
   }
 );
 
@@ -61,7 +50,7 @@ const auth = createAsyncThunk<AuthServerRequest>(
   }
 );
 
-export const userThunks = {
+export const thunks = {
   registration,
   login,
   auth
@@ -73,14 +62,10 @@ export const extraActions: UserExtraReducerFunction = (builder): void => {
       state.loading = true;
     })
     .addCase(login.fulfilled, actions.setUser)
+    .addCase(login.rejected, actions.logout)
     .addCase(auth.pending, (state) => {
       state.loading = true;
     })
     .addCase(auth.fulfilled, actions.setUser)
-    .addCase(auth.rejected, (state) => {
-      state.currentUser = null;
-      state.isAuth = false;
-      state.loading = false;
-      localStorage.removeItem('jwt');
-    });
+    .addCase(auth.rejected, actions.logout);
 };

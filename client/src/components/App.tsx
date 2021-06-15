@@ -3,8 +3,7 @@ import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
-import { userSelectors } from 'store/user';
-import { userThunks } from 'store/user/extraActions';
+import { userSelectors, userThunks } from 'store/user';
 
 import { FlexBox } from 'utils/components/FlexBox';
 import { Navbar } from './Navbar';

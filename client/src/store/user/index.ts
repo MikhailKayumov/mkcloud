@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import { actions } from './actions';
 import { selectors } from './selectors';
-import { extraActions } from './extraActions';
+import { extraActions, thunks } from './extraActions';
 import { initialState, stateName } from './constants';
 
 const userSlice = createSlice({
@@ -15,3 +15,4 @@ const userSlice = createSlice({
 export const userReducer = userSlice.reducer;
 export const userActions = userSlice.actions;
 export const userSelectors = selectors;
+export const userThunks = thunks;

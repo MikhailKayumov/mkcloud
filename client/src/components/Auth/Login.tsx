@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { useDispatch } from 'store';
-import { userThunks } from 'store/user/extraActions';
+import { userThunks } from 'store/user';
 
 import { useForm } from './useForm';
 

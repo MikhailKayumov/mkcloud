@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useDispatch } from 'store';
-import { userThunks } from 'store/user/extraActions';
+import { userThunks } from 'store/user';
 
 import { useForm } from './useForm';
 
