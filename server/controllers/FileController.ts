@@ -1,20 +1,24 @@
 import path from 'path';
+import { existsSync } from 'fs';
 import { Request, Response } from 'express';
+import { ObjectId } from 'mongodb';
 
+import User from '../models/User';
 import File, { FileType } from '../models/File';
 
 import FileService from '../services/FileService';
-import { FilterQuery } from 'mongoose';
+import config from 'config';
+import { UploadedFile } from 'express-fileupload';
 
 class FileController {
   async createDir(
-    req: Request<{ userId: string }>,
+    {
+      body: { name, type, parent },
+      params: { userId: user }
+    }: Request<{ userId: ObjectId }>,
     res: Response<FileType | { message: string }>
   ) {
     try {
-      const { name, type, parent } = req.body;
-      const { userId: user } = req.params;
-
       const dir = new File({ name, type, user, parent });
       const parentDir = await File.findOne({ _id: parent });
 
@@ -50,14 +54,16 @@ class FileController {
   }
 
   async getFiles(
-    req: Request<{ userId: string }>,
+    {
+      params: { userId: user },
+      query: { parent }
+    }: Request<{ userId: ObjectId }>,
     res: Response<FileType[] | { message: string }>
   ) {
     try {
-      const { userId: user } = req.params;
-      const parent = req.query.parent;
+      const parentDir = parent ? new ObjectId(parent.toString()) : undefined;
+      const files = await File.find({ user, parent: parentDir });
 
-      const files = await File.find({ user, parent } as FilterQuery<FileType>);
       return res.status(200).json(
         files.map((file) => ({
           id: file.id,
@@ -72,6 +78,78 @@ class FileController {
           date: file.date
         }))
       );
+    } catch (e) {
+      console.log(e.message);
+      return res.status(500).json({ message: e.message });
+    }
+  }
+
+  // todo: move to FileService
+  async uploadFile(
+    {
+      files,
+      params: { userId },
+      body: { parent }
+    }: Request<{ userId: ObjectId }>,
+    res: Response
+  ) {
+    try {
+      const file = files?.file as UploadedFile;
+      if (!file) {
+        return res.status(400).json({ message: 'File was not received' });
+      }
+
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(401).json({ message: 'Auth error' });
+      }
+
+      if (user.usedSpace + file.size > user.diskSpace) {
+        return res.status(400).json({ message: 'There is no space on disk' });
+      }
+
+      user.usedSpace = user.usedSpace + file.size;
+
+      const parentDir = await File.findOne({ user: user.id, _id: parent });
+      const filePath: string = path.resolve(
+        config.get('userFileDir'),
+        user.id,
+        parentDir?.path || '',
+        file.name
+      );
+
+      if (existsSync(filePath)) {
+        return res.status(400).json({ message: 'File already exist' });
+      }
+
+      await file.mv(filePath);
+
+      const type = file.name.split('.').pop();
+
+      const dbFile = new File({
+        name: file.name,
+        type,
+        size: file.size,
+        path: parentDir?.path,
+        parent: parentDir?.id,
+        user: user.id
+      });
+
+      await dbFile.save();
+      await user.save();
+
+      return res.status(201).json({
+        id: dbFile.id,
+        type: dbFile.type,
+        name: dbFile.name,
+        size: dbFile.size,
+        path: dbFile.path,
+        accessLink: dbFile.accessLink || '',
+        user: dbFile.user,
+        parent: dbFile.parent,
+        childs: dbFile.childs,
+        date: dbFile.date
+      });
     } catch (e) {
       console.log(e.message);
       return res.status(500).json({ message: e.message });

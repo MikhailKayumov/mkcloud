@@ -1,15 +1,11 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId } from 'mongodb';
 
-type RequirementUserFields = {
+export type User = {
   id: string;
   email: string;
   password: string;
+  diskSpace: number;
+  usedSpace: number;
+  avatar: string;
+  files: ObjectId[];
 };
-type NotRequirementUserFields = {
-  diskSpace?: number;
-  usedSpace?: number;
-  avatar?: string;
-  files?: ObjectId[];
-};
-
-export type User = RequirementUserFields & NotRequirementUserFields;

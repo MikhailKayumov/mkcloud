@@ -2,9 +2,10 @@ import { NextFunction, Request } from 'express';
 import { verify } from 'jsonwebtoken';
 import config from 'config';
 import { LoginRes } from '../routes/types';
+import { ObjectId } from 'mongodb';
 
 export const checkToken = (
-  req: Request<{ userId: string }>,
+  req: Request<{ userId: ObjectId }>,
   res: LoginRes,
   next: NextFunction
 ): void | LoginRes => {
@@ -17,7 +18,7 @@ export const checkToken = (
     }
 
     const decoded = verify(token, config.get('secretKey')) as { id: string };
-    req.params.userId = decoded.id;
+    req.params.userId = new ObjectId(decoded.id);
 
     next();
   } catch (e) {

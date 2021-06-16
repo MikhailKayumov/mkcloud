@@ -53,7 +53,7 @@ export const useForm = ({
         type="password"
         onChange={onChange}
       />
-      <button className="auth_form__btn" onClick={submit}>
+      <button className="button auth_form__btn" onClick={submit}>
         {submitBtnTitle}
       </button>
     </FlexBox>

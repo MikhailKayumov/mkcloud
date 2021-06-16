@@ -29,6 +29,7 @@ export const CreateDirPopup: React.FC = (): JSX.Element => {
         })
       ).then(() => {
         setDirName('');
+        close();
       });
     }
   };
@@ -65,7 +66,7 @@ export const CreateDirPopup: React.FC = (): JSX.Element => {
             value={dirName}
             onChange={onChange}
           />
-          <button className="popup__create" onClick={createDir}>
+          <button className="button popup__create" onClick={createDir}>
             Создать
           </button>
         </FlexBox>

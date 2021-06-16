@@ -6,7 +6,6 @@ const setFiles: FileReducerFunction<File[]> = (state, { payload }) => {
 
 const addFile: FileReducerFunction<File> = (state, { payload }) => {
   state.files.push(payload);
-  state.createDirPopupDisplay = false;
 };
 
 const toggleCreateDirPopupDisplay: FileReducerFunction<boolean> = (

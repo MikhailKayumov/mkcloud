@@ -6,7 +6,8 @@ import { checkToken } from '../middleware/auth.middleware';
 
 const router = Router();
 
-router.post('', checkToken, FileController.createDir);
 router.get('', checkToken, FileController.getFiles);
+router.post('', checkToken, FileController.createDir);
+router.post('/upload', checkToken, FileController.uploadFile);
 
 export default router;
