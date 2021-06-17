@@ -37,6 +37,7 @@ export const File: React.FC<{ file: FileType }> = ({ file }): JSX.Element => {
           dispatcher(fileThunks.downloadFile(file));
           break;
         case 'delete':
+          dispatcher(fileThunks.deleteFile(file));
           break;
       }
     },

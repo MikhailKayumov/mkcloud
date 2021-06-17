@@ -10,5 +10,6 @@ router.get('', checkToken, FileController.getFiles);
 router.post('', checkToken, FileController.createDir);
 router.post('/upload', checkToken, FileController.uploadFile);
 router.get('/download', checkToken, FileController.downloadFile);
+router.delete('/delete', checkToken, FileController.deleteFile);
 
 export default router;

@@ -1,6 +1,8 @@
 import path from 'path';
 import { existsSync } from 'fs';
+
 import { Request, Response } from 'express';
+import { UploadedFile } from 'express-fileupload';
 import { ObjectId } from 'mongodb';
 
 import User from '../models/User';
@@ -8,7 +10,6 @@ import File, { FileType } from '../models/File';
 
 import FileService from '../services/FileService';
 import config from 'config';
-import { UploadedFile } from 'express-fileupload';
 
 class FileController {
   async createDir(
@@ -105,10 +106,13 @@ class FileController {
         name: file.name,
         type,
         size: file.size,
-        path: filePath,
+        path: path.join(parentDir?.path || '', file.name),
         parent: parentDir?.id,
         user: user.id
       });
+
+      parentDir?.childs.push(dbFile._id);
+      await parentDir?.save();
 
       await dbFile.save();
       await user.save();
@@ -136,6 +140,38 @@ class FileController {
 
       return res.status(400).json({ message: 'File not found' });
     } catch (e) {
+      console.log(e);
+      return res.status(500).json({ message: e.message });
+    }
+  }
+
+  async deleteFile(
+    { query: { fileId } }: Request<{ userId: ObjectId }>,
+    res: Response<string | { message: string }>
+  ) {
+    try {
+      const file = await File.findById(fileId);
+      if (!file) {
+        return res.status(400).json({ message: 'File not found' });
+      }
+
+      if (file.childs.length) {
+        await Promise.all(
+          file.childs.map(async (childId) => {
+            const child = await File.findById(childId);
+            return child?.remove();
+          })
+        );
+      }
+
+      await FileService.deleteFile(file);
+      await file.remove();
+
+      return res.json({
+        message: `${file.type === 'dir' ? 'Directory' : 'File'} was deleted`
+      });
+    } catch (e) {
+      console.log(e);
       return res.status(500).json({ message: e.message });
     }
   }

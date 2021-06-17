@@ -8,6 +8,10 @@ const addFile: FileReducerFunction<File> = (state, { payload }) => {
   state.files.push(payload);
 };
 
+const deleteFile: FileReducerFunction<string> = (state, { payload }) => {
+  state.files = state.files.filter((file) => file._id !== payload);
+};
+
 const toggleCreateDirPopupDisplay: FileReducerFunction<boolean> = (
   state,
   { payload }
@@ -38,5 +42,6 @@ export const actions = {
   setCurrentDir,
   toggleCreateDirPopupDisplay,
   pushToStack,
-  popFromStack
+  popFromStack,
+  deleteFile
 };

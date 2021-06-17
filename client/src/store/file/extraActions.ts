@@ -75,16 +75,27 @@ const downloadFile = createAsyncThunk<void, FileType>(
   }
 );
 
+const deleteFile = createAsyncThunk<string, FileType>(
+  `${stateName}/deleteFile`,
+  async (file) => {
+    const { data } = await API.delete(`file/delete?fileId=${file._id}`);
+    console.log(data?.message || '');
+    return file._id;
+  }
+);
+
 export const thunks = {
   getFiles,
   createDir,
   uploadFile,
-  downloadFile
+  downloadFile,
+  deleteFile
 };
 
 export const extraActions: FileExtraReducerFunction = (builder) => {
   builder
     .addCase(getFiles.fulfilled, actions.setFiles)
     .addCase(createDir.fulfilled, actions.addFile)
-    .addCase(uploadFile.fulfilled, actions.addFile);
+    .addCase(uploadFile.fulfilled, actions.addFile)
+    .addCase(deleteFile.fulfilled, actions.deleteFile);
 };
