@@ -29,7 +29,7 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
-    "indent": ["error", 2],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
     "semi": ["error", "always"],
     "array-bracket-spacing": ["error", "never"],
     "object-curly-spacing": ["error", "always"],

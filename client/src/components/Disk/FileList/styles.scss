@@ -4,6 +4,7 @@
   margin: 20px 0;
 
   &__header {
+    padding: 10px 0;
     display: grid;
     grid-template-columns: 1fr 4fr repeat(4, 1fr);
     border-bottom: solid 2px c.$font-color;

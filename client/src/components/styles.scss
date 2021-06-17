@@ -35,7 +35,7 @@ textarea, input, button {
   color: #ffffff;
   font-weight: 700;
   padding: 8px 16px;
-  transition: background-color 0.21s ease-out;
+  transition: all 0.21s ease-out;
   cursor: pointer;
   &:hover {
     background-color: #4d5d75;

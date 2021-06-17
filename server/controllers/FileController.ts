@@ -84,7 +84,6 @@ class FileController {
     }
   }
 
-  // todo: move to FileService
   async uploadFile(
     {
       files,
@@ -152,6 +151,27 @@ class FileController {
       });
     } catch (e) {
       console.log(e.message);
+      return res.status(500).json({ message: e.message });
+    }
+  }
+
+  async downloadFile(
+    { params: { userId }, query: { fileId } }: Request<{ userId: ObjectId }>,
+    res: Response
+  ) {
+    try {
+      const file = await File.findOne({ _id: fileId, user: userId });
+
+      const filePath: string = path.resolve(
+        config.get('userFileDir'),
+        userId.toString(),
+        file?.path || '',
+        file?.name || ''
+      );
+      if (existsSync(filePath)) return res.status(200).download(filePath);
+
+      return res.status(400).json({ message: 'File not found' });
+    } catch (e) {
       return res.status(500).json({ message: e.message });
     }
   }

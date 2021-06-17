@@ -9,5 +9,6 @@ const router = Router();
 router.get('', checkToken, FileController.getFiles);
 router.post('', checkToken, FileController.createDir);
 router.post('/upload', checkToken, FileController.uploadFile);
+router.get('/download', checkToken, FileController.downloadFile);
 
 export default router;

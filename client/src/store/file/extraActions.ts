@@ -52,10 +52,34 @@ const uploadFile = createAsyncThunk<
   return result.data;
 });
 
+const downloadFile = createAsyncThunk<void, FileType>(
+  `${stateName}/downloadFile`,
+  async (file) => {
+    const result = await API.get(`file/download?fileId=${file.id}`, {
+      responseType: 'blob'
+    });
+
+    if (result.status === 200) {
+      const downloadURL = URL.createObjectURL(result.data);
+      const link = document.createElement('a');
+      link.style.display = 'none';
+
+      link.href = downloadURL;
+      console.log(downloadURL);
+      link.download = file.name;
+
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+  }
+);
+
 export const thunks = {
   getFiles,
   createDir,
-  uploadFile
+  uploadFile,
+  downloadFile
 };
 
 export const extraActions: FileExtraReducerFunction = (builder) => {
