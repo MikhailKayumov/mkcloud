@@ -20,13 +20,13 @@ class FileController {
   ) {
     try {
       const dir = new File({ name, type, user, parent });
-      const parentDir = await File.findOne({ _id: parent });
 
+      const parentDir = await File.findById(parent);
       if (parentDir) {
         dir.path = path.join(parentDir.path, dir.name);
         await FileService.createDir(dir);
 
-        parentDir.childs.push(dir.id);
+        parentDir.childs.push(dir._id);
         parentDir.save();
       } else {
         dir.path = name;
@@ -35,18 +35,7 @@ class FileController {
 
       await dir.save();
 
-      return res.json({
-        id: dir.id,
-        type: dir.type,
-        name: dir.name,
-        size: dir.size,
-        path: dir.path,
-        accessLink: dir.accessLink || '',
-        user: dir.user,
-        parent: dir.parent,
-        childs: dir.childs,
-        date: dir.date
-      });
+      return res.json(dir);
     } catch (e) {
       console.log(e.message);
       return res.status(400).json({ message: e.message });
@@ -64,20 +53,7 @@ class FileController {
       const parentDir = parent ? new ObjectId(parent.toString()) : undefined;
       const files = await File.find({ user, parent: parentDir });
 
-      return res.status(200).json(
-        files.map((file) => ({
-          id: file.id,
-          type: file.type,
-          name: file.name,
-          size: file.size,
-          path: file.path,
-          accessLink: file.accessLink || '',
-          user: file.user,
-          parent: file.parent,
-          childs: file.childs,
-          date: file.date
-        }))
-      );
+      return res.status(200).json(files);
     } catch (e) {
       console.log(e.message);
       return res.status(500).json({ message: e.message });
@@ -129,7 +105,7 @@ class FileController {
         name: file.name,
         type,
         size: file.size,
-        path: parentDir?.path,
+        path: filePath,
         parent: parentDir?.id,
         user: user.id
       });
@@ -137,18 +113,7 @@ class FileController {
       await dbFile.save();
       await user.save();
 
-      return res.status(201).json({
-        id: dbFile.id,
-        type: dbFile.type,
-        name: dbFile.name,
-        size: dbFile.size,
-        path: dbFile.path,
-        accessLink: dbFile.accessLink || '',
-        user: dbFile.user,
-        parent: dbFile.parent,
-        childs: dbFile.childs,
-        date: dbFile.date
-      });
+      return res.status(201).json(dbFile);
     } catch (e) {
       console.log(e.message);
       return res.status(500).json({ message: e.message });
@@ -165,8 +130,7 @@ class FileController {
       const filePath: string = path.resolve(
         config.get('userFileDir'),
         userId.toString(),
-        file?.path || '',
-        file?.name || ''
+        file?.path || ''
       );
       if (existsSync(filePath)) return res.status(200).download(filePath);
 

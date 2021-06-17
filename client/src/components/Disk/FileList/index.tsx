@@ -10,7 +10,7 @@ export const FileList: React.FC = (): JSX.Element => {
   const files = useSelector(fileSelectors.files);
 
   const list = useMemo(() => {
-    return files.map((file) => <File file={file} key={file.id} />);
+    return files.map((file) => <File file={file} key={file._id} />);
   }, [files]);
 
   return (

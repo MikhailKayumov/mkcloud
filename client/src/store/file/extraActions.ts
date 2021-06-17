@@ -55,7 +55,7 @@ const uploadFile = createAsyncThunk<
 const downloadFile = createAsyncThunk<void, FileType>(
   `${stateName}/downloadFile`,
   async (file) => {
-    const result = await API.get(`file/download?fileId=${file.id}`, {
+    const result = await API.get(`file/download?fileId=${file._id}`, {
       responseType: 'blob'
     });
 

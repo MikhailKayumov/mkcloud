@@ -10,7 +10,7 @@ const File = model<FileType>(
     path: { type: String, default: '' },
     size: { type: Number, default: 0 },
     date: { type: Date, default: Date.now() },
-    accessLink: { type: String },
+    accessLink: { type: String, default: '' },
     user: { type: ObjectId, ref: 'User' },
     parent: { type: ObjectId, ref: 'File' },
     childs: [{ type: ObjectId, ref: 'File' }]

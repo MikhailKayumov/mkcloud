@@ -1,7 +1,7 @@
 import { ExtraReducerFunction, ReducerFunction } from '../types';
 
 export type File = {
-  id: string;
+  _id: string;
   type: string;
   name: string;
   path: string;

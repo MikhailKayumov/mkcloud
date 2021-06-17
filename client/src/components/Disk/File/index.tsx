@@ -18,7 +18,7 @@ export const File: React.FC<{ file: FileType }> = ({ file }): JSX.Element => {
   const dispatcher = useDispatch();
   const currentDir = useSelector(fileSelectors.currentDir);
 
-  const { id, name, size, type, date } = file;
+  const { _id: id, name, size, type, date } = file;
 
   const isDir = type === 'dir';
   const creatingDate = new Date(date);
