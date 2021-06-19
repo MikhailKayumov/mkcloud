@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { useSelector } from 'react-redux';
 import { fileSelectors } from 'store/file';
@@ -10,7 +11,11 @@ export const FileList: React.FC = (): JSX.Element => {
   const files = useSelector(fileSelectors.files);
 
   const list = useMemo(() => {
-    return files.map((file) => <File file={file} key={file._id} />);
+    return files.map((file) => (
+      <CSSTransition key={file._id} timeout={500} classNames={'file'}>
+        <File file={file} />
+      </CSSTransition>
+    ));
   }, [files]);
 
   return (
@@ -20,7 +25,7 @@ export const FileList: React.FC = (): JSX.Element => {
         <div className="filelist__date">Дата</div>
         <div className="filelist__size">Размер</div>
       </div>
-      {list}
+      <TransitionGroup>{list}</TransitionGroup>
     </div>
   );
 };

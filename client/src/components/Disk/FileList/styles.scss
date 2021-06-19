@@ -21,3 +21,37 @@
     justify-self: center;
   }
 }
+
+.file-enter-active {
+  animation: file-enter 500ms ease-in-out forwards;
+}
+
+.file-exit-active {
+  animation: file-exit 300ms ease-out forwards;
+  transform-origin: center top;
+}
+
+@keyframes file-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes file-exit {
+  0% {
+    opacity: 1;
+    transform: scale(1, 1);
+  }
+  100% {
+    opacity: 0;
+    height: 0;
+    padding: 0;
+    border-width: 0;
+    transform: scale(1, 0);
+  }
+}
