@@ -1,3 +1,5 @@
+import './styles.scss';
+
 import React, { useEffect } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 
@@ -11,8 +13,6 @@ import { Loader } from './Loader';
 import { Disk } from './Disk';
 import { Login } from './Auth/Login';
 import { Registration } from './Auth/Registration';
-
-import './styles.scss';
 
 const App: React.FC = (): JSX.Element => {
   const isAuth = useSelector(userSelectors.isAuth);

@@ -6,5 +6,6 @@ export const initialState: FileState = {
   files: [],
   currentDir: null,
   createDirPopupDisplay: false,
-  dirStack: []
+  dirStack: [],
+  uploadFiles: []
 };

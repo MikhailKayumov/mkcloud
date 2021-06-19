@@ -146,10 +146,15 @@ class FileController {
   }
 
   async deleteFile(
-    { query: { fileId } }: Request<{ userId: ObjectId }>,
+    { query: { fileId }, params: { userId } }: Request<{ userId: ObjectId }>,
     res: Response<string | { message: string }>
   ) {
     try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+      }
+
       const file = await File.findById(fileId);
       if (!file) {
         return res.status(400).json({ message: 'File not found' });
@@ -159,13 +164,17 @@ class FileController {
         await Promise.all(
           file.childs.map(async (childId) => {
             const child = await File.findById(childId);
+            user.usedSpace -= child?.size || 0;
             return child?.remove();
           })
         );
       }
 
+      user.usedSpace = Math.max(user.usedSpace - (file?.size || 0), 0);
+
       await FileService.deleteFile(file);
       await file.remove();
+      await user.save();
 
       return res.json({
         message: `${file.type === 'dir' ? 'Directory' : 'File'} was deleted`

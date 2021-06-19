@@ -74,6 +74,7 @@
     background-color: transparent;
     transition: background-color 0.16s ease-in;
     cursor: pointer;
+    color: c.$font-color;
     &:hover {
       background-color: c.$background-color;
     }

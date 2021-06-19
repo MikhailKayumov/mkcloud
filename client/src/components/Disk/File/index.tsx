@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
 import { fileActions, fileSelectors, fileThunks } from 'store/file';
-import { File as FileType } from 'store/file/types';
+import { MyFile } from 'store/file/types';
 
 import { FlexBox } from 'utils/components/FlexBox';
 
@@ -14,7 +14,7 @@ import FileIcon from 'assets/img/file.svg';
 
 import './styles.scss';
 
-export const File: React.FC<{ file: FileType }> = ({ file }): JSX.Element => {
+export const File: React.FC<{ file: MyFile }> = ({ file }): JSX.Element => {
   const dispatcher = useDispatch();
   const currentDir = useSelector(fileSelectors.currentDir);
 

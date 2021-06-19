@@ -1,11 +1,20 @@
-import { File, FileReducerFunction } from './types';
+import { MyFile, FileReducerFunction, MyUploadFile } from './types';
 
-const setFiles: FileReducerFunction<File[]> = (state, { payload }) => {
+const setFiles: FileReducerFunction<MyFile[]> = (state, { payload }) => {
   state.files = payload;
 };
 
-const addFile: FileReducerFunction<File> = (state, { payload }) => {
-  state.files.push(payload);
+const addFile: FileReducerFunction<Promise<MyFile> | MyFile | null> = (
+  state,
+  { payload }
+) => {
+  if (payload) {
+    if (payload instanceof Promise) {
+      payload.then((file) => state.files.push(file));
+    } else {
+      state.files.push(payload);
+    }
+  }
 };
 
 const deleteFile: FileReducerFunction<string> = (state, { payload }) => {
@@ -36,6 +45,25 @@ const popFromStack: FileReducerFunction = (state) => {
   }
 };
 
+const addUploadFile: FileReducerFunction<MyUploadFile> = (
+  state,
+  { payload }
+) => {
+  state.uploadFiles.push(payload);
+};
+
+const removeUploadFile: FileReducerFunction<number> = (state, { payload }) => {
+  state.uploadFiles = state.uploadFiles.filter((file) => file.id !== payload);
+};
+
+const changeUploadFileProgress: FileReducerFunction<{
+  fileId: number;
+  progress: number;
+}> = (state, { payload: { fileId, progress } }) => {
+  const file = state.uploadFiles.find((file) => file.id === fileId);
+  if (file) file.progress = progress;
+};
+
 export const actions = {
   setFiles,
   addFile,
@@ -43,5 +71,8 @@ export const actions = {
   toggleCreateDirPopupDisplay,
   pushToStack,
   popFromStack,
-  deleteFile
+  deleteFile,
+  addUploadFile,
+  removeUploadFile,
+  changeUploadFileProgress
 };

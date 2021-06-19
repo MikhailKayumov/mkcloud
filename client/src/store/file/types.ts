@@ -1,6 +1,6 @@
 import { ExtraReducerFunction, ReducerFunction } from '../types';
 
-export type File = {
+export type MyFile = {
   _id: string;
   type: string;
   name: string;
@@ -13,11 +13,18 @@ export type File = {
   childs: string[];
 };
 
+export type MyUploadFile = {
+  id: number;
+  name: string;
+  progress: number;
+};
+
 export type FileState = {
-  files: File[];
+  files: MyFile[];
   currentDir: string | null;
   createDirPopupDisplay: boolean;
   dirStack: string[];
+  uploadFiles: MyUploadFile[];
 };
 
 export type FileReducerFunction<P = void> = ReducerFunction<FileState, P>;

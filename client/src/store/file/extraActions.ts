@@ -1,10 +1,16 @@
-import { File as FileType, FileExtraReducerFunction } from './types';
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { ApplicationState } from '../types';
+import { MyFile, FileExtraReducerFunction } from './types';
+
+import { CancelToken } from 'axios';
 import API from 'utils/API';
+
+import { createAsyncThunk } from '@reduxjs/toolkit';
+
 import { stateName } from './constants';
 import { actions } from './actions';
+import { fileActions } from './index';
 
-const getFiles = createAsyncThunk<FileType[], string>(
+const getFiles = createAsyncThunk<MyFile[], string>(
   `${stateName}/getFiles`,
   async (dirId) => {
     const result = await API.get(`file${dirId ? `?parent=${dirId}` : ''}`);
@@ -12,7 +18,7 @@ const getFiles = createAsyncThunk<FileType[], string>(
   }
 );
 
-const createDir = createAsyncThunk<FileType, { parent: string; name: string }>(
+const createDir = createAsyncThunk<MyFile, { parent: string; name: string }>(
   `${stateName}/createDir`,
   async ({ parent, name }) => {
     const result = await API.post('file', {
@@ -25,14 +31,17 @@ const createDir = createAsyncThunk<FileType, { parent: string; name: string }>(
 );
 
 const uploadFile = createAsyncThunk<
-  FileType,
-  { file: File; parent: string | null }
->(`${stateName}/uploadFile`, async ({ file, parent }) => {
+  Promise<MyFile>,
+  { file: File; parent: string | null; cancelToken: CancelToken; id: number },
+  { state: ApplicationState }
+>(`${stateName}/uploadFile`, ({ id, file, parent, cancelToken }, thunkAPI) => {
   const formData = new FormData();
   formData.append('file', file);
   if (parent) formData.append('parent', parent);
 
-  const result = await API.post('file/upload', formData, {
+  const result = API.post('file/upload', formData, {
+    cancelToken: cancelToken,
+    timeout: 0,
     onUploadProgress: (progressEvent) => {
       const totalLength = progressEvent.lengthComputable
         ? progressEvent.total
@@ -40,19 +49,31 @@ const uploadFile = createAsyncThunk<
           progressEvent.target.getResponseHeader(
             'x-decompressed-content-length'
           );
-      console.log('total', totalLength);
 
       if (totalLength) {
         const progress = Math.round((progressEvent.loaded * 100) / totalLength);
-        console.log(progress);
+        thunkAPI.dispatch(
+          fileActions.changeUploadFileProgress({ fileId: id, progress })
+        );
       }
     }
   });
 
-  return result.data;
+  thunkAPI.dispatch(
+    fileActions.addUploadFile({
+      id,
+      name: file.name,
+      progress: 0
+    })
+  );
+
+  return result
+    .then((data) => data.data)
+    .catch((e) => console.log(e))
+    .finally(() => thunkAPI.dispatch(fileActions.removeUploadFile(id)));
 });
 
-const downloadFile = createAsyncThunk<void, FileType>(
+const downloadFile = createAsyncThunk<void, MyFile>(
   `${stateName}/downloadFile`,
   async (file) => {
     const result = await API.get(`file/download?fileId=${file._id}`, {
@@ -75,7 +96,7 @@ const downloadFile = createAsyncThunk<void, FileType>(
   }
 );
 
-const deleteFile = createAsyncThunk<string, FileType>(
+const deleteFile = createAsyncThunk<string, MyFile>(
   `${stateName}/deleteFile`,
   async (file) => {
     const { data } = await API.delete(`file/delete?fileId=${file._id}`);

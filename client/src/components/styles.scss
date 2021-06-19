@@ -7,10 +7,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 @import "~reset-css";
 
-* {
-  color: c.$font-color;
-}
-
 html {
   font: 10px/1 'Roboto', sans-serif;
 }
@@ -26,13 +22,14 @@ body {
 
 textarea, input, button {
   font: 14px/20px 'Roboto', sans-serif;
+  color: c.$font-color;
 }
 
 .button {
   border: none;
+  color: c.$background-color;
   background-color: c.$font-color;
   border-radius: 4px;
-  color: #ffffff;
   font-weight: 700;
   padding: 8px 16px;
   transition: all 0.21s ease-out;
@@ -47,6 +44,7 @@ textarea, input, button {
 
 #root {
   width: 100%;
+  color: c.$font-color;
 }
 
 .wrap {

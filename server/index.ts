@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import mongo from 'mongoose';
 import fileUpload from 'express-fileupload';
@@ -16,7 +17,12 @@ const DB_URL = config.get<string>('dbUrl');
 const app = express();
 
 app.use(cors);
-app.use(fileUpload({}));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: path.resolve('userFiles/tempFileDir')
+  })
+);
 app.use(express.json());
 app.use(apiPath('auth'), AuthRouter);
 app.use(apiPath('file'), FileRouter);

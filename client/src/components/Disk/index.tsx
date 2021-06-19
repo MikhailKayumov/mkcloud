@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import axios, { CancelTokenSource } from 'axios';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
@@ -8,6 +9,7 @@ import { fileActions, fileSelectors, fileThunks } from 'store/file';
 import { FlexBox } from 'utils/components/FlexBox';
 import { FileList } from './FileList';
 import { CreateDirPopup } from './CreateDirPopup';
+import { Uploader } from './Uploader';
 
 import './styles.scss';
 
@@ -15,27 +17,49 @@ export const Disk: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
   const currentDir = useSelector(fileSelectors.currentDir);
   const popupShow = useSelector(fileSelectors.popupShow);
+  const fileCancelTokenSources = useRef<
+    { id: number; source: CancelTokenSource }[]
+  >([]);
   const [dragEnter, setDragEnter] = useState(false);
 
   useEffect(() => {
     dispatch(fileThunks.getFiles(currentDir));
   }, [currentDir, dispatch]);
 
-  const createDir = () => {
-    dispatch(fileActions.toggleCreateDirPopupDisplay(true));
-  };
+  const onUploadFiles = (files: File[]) => {
+    files.forEach((file) => {
+      const uploadFileId = Date.now();
 
-  const bakcDir = () => {
-    dispatch(fileActions.popFromStack());
-  };
+      const cancelTokenSource = axios.CancelToken.source();
+      fileCancelTokenSources.current.push({
+        id: uploadFileId,
+        source: cancelTokenSource
+      });
 
-  const fileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    files.forEach((file: File) => {
-      dispatch(fileThunks.uploadFile({ file, parent: currentDir }));
+      dispatch(
+        fileThunks.uploadFile({
+          id: uploadFileId,
+          file,
+          parent: currentDir,
+          cancelToken: cancelTokenSource.token
+        })
+      ).then(() => {
+        fileCancelTokenSources.current = fileCancelTokenSources.current.filter(
+          (entity) => entity.id !== uploadFileId
+        );
+      });
     });
   };
 
+  const createDir = () => {
+    dispatch(fileActions.toggleCreateDirPopupDisplay(true));
+  };
+  const backDir = () => {
+    dispatch(fileActions.popFromStack());
+  };
+  const fileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onUploadFiles(Array.from(event.target.files || []));
+  };
   const onDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -49,12 +73,7 @@ export const Disk: React.FC = (): JSX.Element => {
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    const files = Array.from(e.dataTransfer.files || []);
-    files.forEach((file: File) => {
-      dispatch(fileThunks.uploadFile({ file, parent: currentDir }));
-    });
-
+    onUploadFiles(Array.from(e.dataTransfer.files || []));
     setDragEnter(false);
   };
 
@@ -66,7 +85,7 @@ export const Disk: React.FC = (): JSX.Element => {
       onDragOver={onDragEnter}
     >
       <FlexBox alignItems="center" className="disk__btns">
-        <button className="button disk__btn disk__btnBack" onClick={bakcDir}>
+        <button className="button disk__btn disk__btnBack" onClick={backDir}>
           Назад
         </button>
         <button
@@ -93,6 +112,7 @@ export const Disk: React.FC = (): JSX.Element => {
       </FlexBox>
       <FileList />
       {popupShow ? <CreateDirPopup /> : null}
+      <Uploader filesCancelers={fileCancelTokenSources.current} />
     </div>
   ) : (
     <div
