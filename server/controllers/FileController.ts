@@ -48,13 +48,25 @@ class FileController {
       params: { userId: user },
       query: { parent }
     }: Request<{ userId: ObjectId }>,
-    res: Response<FileType[] | { message: string }>
+    res: Response<
+      { directories: FileType[]; files: FileType[] } | { message: string }
+    >
   ) {
     try {
       const parentDir = parent ? new ObjectId(parent.toString()) : undefined;
-      const files = await File.find({ user, parent: parentDir });
 
-      return res.status(200).json(files);
+      const directories = await File.find({
+        user,
+        parent: parentDir,
+        type: 'dir'
+      });
+      const files = await File.find({
+        user,
+        parent: parentDir,
+        $nor: [{ type: 'dir' }]
+      });
+
+      return res.status(200).json({ directories, files });
     } catch (e) {
       console.log(e.message);
       return res.status(500).json({ message: e.message });

@@ -1,10 +1,76 @@
 @use '../../utils/styles/_colors' as c;
 
 .disk {
-  min-height: calc(100vh - 50px - 20px);
-  margin-top: 20px;
+  min-height: calc(100vh - 50px - 32px);
+  margin-top: 32px;
 
-  &__btns {}
+  &__header-right {
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      line-height: 1;
+      border: none;
+      background: transparent;
+      transition: all 0.16s ease-in-out;
+      border-radius: 8px;
+      &:hover {
+        background-color: rgba(86, 104, 133, 0.21);
+      }
+      img {
+        display: block;
+      }
+      &.order-btn {
+        width: 70px;
+        margin-right: 12px;
+        img {
+          transition: transform 0.22s ease-in-out;
+          width: 60px;
+        }
+        &.asc {
+          img {
+            transform: scale(1, 1)
+          };
+        }
+        &.desc {
+          img {
+            transform: scale(1, -1)
+          };
+        }
+      }
+      &.type-view-btn {
+        margin-left: 4px;
+        img {
+          width: 66%;
+        }
+        &.active {
+          cursor: default;
+          background-color: rgba(86, 104, 133, 0.21);
+        }
+      }
+    }
+    select {
+      margin-right: 20px;
+      padding: 0 8px;
+      width: 120px;
+      height: 100%;
+      outline: none;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      border-radius: 8px;
+      transition: all 0.16s ease-in-out;
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(86, 104, 133, 0.21);
+      }
+    }
+  }
 
   &__btn {
     display: block;

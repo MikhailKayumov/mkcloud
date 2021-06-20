@@ -4,7 +4,6 @@ import API from 'utils/API';
 import { AuthData, AuthServerRequest, UserExtraReducerFunction } from './types';
 import { stateName } from './constants';
 import { actions } from './actions';
-import { delay } from '../../utils';
 
 const registration = createAsyncThunk<Promise<unknown>, AuthData>(
   `${stateName}/registration`,
@@ -44,7 +43,6 @@ const login = createAsyncThunk<AuthServerRequest, AuthData>(
 const auth = createAsyncThunk<AuthServerRequest>(
   `${stateName}/auth`,
   async () => {
-    await delay(1000);
     const result = await API.get('auth/auth');
     return result.data;
   }

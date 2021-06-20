@@ -8,7 +8,7 @@ import './styles.scss';
 import { File } from '../File';
 
 export const FileList: React.FC = (): JSX.Element => {
-  const files = useSelector(fileSelectors.files);
+  const files = useSelector(fileSelectors.filesAndDirs);
 
   const list = useMemo(() => {
     return files.map((file) => (

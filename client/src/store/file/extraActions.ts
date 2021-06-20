@@ -10,13 +10,13 @@ import { stateName } from './constants';
 import { actions } from './actions';
 import { fileActions } from './index';
 
-const getFiles = createAsyncThunk<MyFile[], string>(
-  `${stateName}/getFiles`,
-  async (dirId) => {
-    const result = await API.get(`file${dirId ? `?parent=${dirId}` : ''}`);
-    return result.data;
-  }
-);
+const getFiles = createAsyncThunk<
+  { files: MyFile[]; directories: MyFile[] },
+  string
+>(`${stateName}/getFiles`, async (dirId) => {
+  const result = await API.get(`file${dirId ? `?parent=${dirId}` : ''}`);
+  return result.data;
+});
 
 const createDir = createAsyncThunk<MyFile, { parent: string; name: string }>(
   `${stateName}/createDir`,
@@ -96,12 +96,12 @@ const downloadFile = createAsyncThunk<void, MyFile>(
   }
 );
 
-const deleteFile = createAsyncThunk<string, MyFile>(
+const deleteFile = createAsyncThunk<{ id: string; type: string }, MyFile>(
   `${stateName}/deleteFile`,
   async (file) => {
     const { data } = await API.delete(`file/delete?fileId=${file._id}`);
     console.log(data?.message || '');
-    return file._id;
+    return { id: file._id, type: file.type };
   }
 );
 
@@ -116,7 +116,7 @@ export const thunks = {
 export const extraActions: FileExtraReducerFunction = (builder) => {
   builder
     .addCase(getFiles.fulfilled, actions.setFiles)
-    .addCase(createDir.fulfilled, actions.addFile)
+    .addCase(createDir.fulfilled, actions.addDir)
     .addCase(uploadFile.fulfilled, actions.addFile)
     .addCase(deleteFile.fulfilled, actions.deleteFile);
 };
