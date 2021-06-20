@@ -21,6 +21,11 @@
     justify-self: center;
   }
 }
+.filelist__plate {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 46px;
+}
 
 .content-loader, .no-files {
   position: absolute;

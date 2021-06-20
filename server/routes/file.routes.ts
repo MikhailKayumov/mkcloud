@@ -2,14 +2,14 @@ import { Router } from 'express';
 
 import FileController from '../controllers/FileController';
 
-import { checkToken } from '../middleware/auth.middleware';
+import { auth } from '../middleware/auth.middleware';
 
 const router = Router();
 
-router.get('', checkToken, FileController.getFiles);
-router.post('', checkToken, FileController.createDir);
-router.post('/upload', checkToken, FileController.uploadFile);
-router.get('/download', checkToken, FileController.downloadFile);
-router.delete('/delete', checkToken, FileController.deleteFile);
+router.get('', auth, FileController.getFiles);
+router.post('', auth, FileController.createDir);
+router.post('/upload', auth, FileController.uploadFile);
+router.get('/download', auth, FileController.downloadFile);
+router.delete('/delete', auth, FileController.deleteFile);
 
 export default router;

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
 
-import { fileActions, fileSelectors, fileThunks } from 'store/file';
+import { fileSelectors, fileThunks } from 'store/file';
 
 import { Header } from './Header';
 import { FileList } from './FileList';

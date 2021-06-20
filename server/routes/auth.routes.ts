@@ -7,7 +7,7 @@ import config from 'config';
 import User from '../models/User';
 import File from '../models/File';
 import FileService from '../services/FileService';
-import { checkToken } from '../middleware/auth.middleware';
+import { auth } from '../middleware/auth.middleware';
 
 import { LoginReq, LoginRes, RegistrationReq, RegistrationRes } from './types';
 import { ObjectId } from 'mongodb';
@@ -98,7 +98,7 @@ router.post('/login', async (req: LoginReq, res: LoginRes) => {
 
 router.get(
   '/auth',
-  checkToken,
+  auth,
   async (req: Request<{ userId: ObjectId }>, res: LoginRes) => {
     try {
       const user = await User.findOne({ _id: req.params.userId });

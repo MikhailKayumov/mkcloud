@@ -1,6 +1,6 @@
 @use '../../../utils/styles/_colors' as c;
 
-.file {
+.file-list {
   padding: 10px 0;
   display: grid;
   grid-template-columns: 1fr 4fr repeat(4, 1fr);
@@ -11,7 +11,7 @@
   overflow: hidden;
   &:hover {
     background-color: rgba(193, 216, 255, 0.36);
-    .file__btn {
+    .file-list__btn {
       transform: scale(1, 1);
     }
   }
@@ -33,5 +33,57 @@
   &__btn {
     transform: scale(1, 0);
     margin: 0 8px;
+  }
+}
+
+.file-plate {
+  padding: 12px;
+  width: 142px;
+  height: 142px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+  &__img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 8px;
+  }
+  &__name {
+    div {
+      text-align: center;
+    }
+  }
+  &__btns {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0.4);
+    transition: transform 0.14s ease-in-out;
+    transform: scale(1, 0);
+    border-radius: 8px;
+  }
+  &__btn {
+    &.file__download {
+      margin-bottom: 12px;
+    }
+  }
+  &.big {
+    width: 190px;
+    height: 190px;
+    .file-plate__img {
+      width: 130px;
+      height: 130px;
+      margin-bottom: 8px;
+    }
+  }
+  &:hover {
+    .file-plate__btns {
+      transform: scale(1, 1);
+    }
   }
 }

@@ -4,7 +4,7 @@ import config from 'config';
 import { LoginRes } from '../routes/types';
 import { ObjectId } from 'mongodb';
 
-export const checkToken = (
+export const auth = (
   req: Request<{ userId: ObjectId }>,
   res: LoginRes,
   next: NextFunction
