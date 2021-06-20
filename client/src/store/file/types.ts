@@ -46,6 +46,7 @@ export type FileState = {
   order: FileOrder;
   fileView: FileView;
   isLoading: boolean;
+  searchValue: string;
 };
 
 export type FileReducerFunction<P = void> = ReducerFunction<FileState, P>;

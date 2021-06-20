@@ -12,9 +12,17 @@ import { fileActions } from './index';
 
 const getFiles = createAsyncThunk<
   { files: MyFile[]; directories: MyFile[] },
-  string
->(`${stateName}/getFiles`, async (dirId) => {
-  const result = await API.get(`file${dirId ? `?parent=${dirId}` : ''}`);
+  { dirId: string; searchName: string }
+>(`${stateName}/getFiles`, async ({ dirId, searchName }, thunkAPI) => {
+  thunkAPI.dispatch(fileActions.toggleLoader(true));
+
+  const result = await API.get('file', {
+    params: {
+      parent: dirId,
+      searchName
+    }
+  });
+
   return result.data;
 });
 

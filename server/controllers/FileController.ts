@@ -46,7 +46,7 @@ class FileController {
   async getFiles(
     {
       params: { userId: user },
-      query: { parent }
+      query: { parent, searchName = '' }
     }: Request<{ userId: ObjectId }>,
     res: Response<
       { directories: FileType[]; files: FileType[] } | { message: string }
@@ -57,11 +57,13 @@ class FileController {
 
       const directories = await File.find({
         user,
+        name: { $regex: `.*${searchName}.*` },
         parent: parentDir,
         type: 'dir'
       });
       const files = await File.find({
         user,
+        name: { $regex: `.*${searchName}.*` },
         parent: parentDir,
         $nor: [{ type: 'dir' }]
       });
@@ -142,12 +144,9 @@ class FileController {
   ) {
     try {
       const file = await File.findOne({ _id: fileId, user: userId });
+      if (!file) return res.status(400).json({ message: 'File not found' });
 
-      const filePath: string = path.resolve(
-        config.get('userFileDir'),
-        userId.toString(),
-        file?.path || ''
-      );
+      const filePath: string = FileService.getPath(file);
       if (existsSync(filePath)) return res.status(200).download(filePath);
 
       return res.status(400).json({ message: 'File not found' });

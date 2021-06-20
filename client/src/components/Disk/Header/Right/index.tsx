@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 
 import { useSelector } from 'react-redux';
-import { fileSelectors } from 'store/file';
+import { useDispatch } from 'store';
+import { fileActions, fileSelectors } from 'store/file';
 import { FileOrder, FileSort, FileView } from 'store/file/types';
 
 import { FlexBox } from 'utils/components/FlexBox';
@@ -11,20 +12,19 @@ import View1 from 'assets/img/view1.svg';
 import View2 from 'assets/img/view2.svg';
 import View3 from 'assets/img/view3.svg';
 
-type RightProps = {
-  onSetSort: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSetOrder: () => void;
-  onSetView: (event: React.MouseEvent<HTMLButtonElement>) => void;
-};
+export const Right: React.FC = React.memo((): JSX.Element => {
+  const dispatch = useDispatch();
 
-export const Right: React.FC<RightProps> = ({
-  onSetSort,
-  onSetOrder,
-  onSetView
-}): JSX.Element => {
   const sortBy = useSelector(fileSelectors.sortBy);
   const orderBy = useSelector(fileSelectors.orderBy);
   const fileView = useSelector(fileSelectors.fileView);
+
+  const onSetSort = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(fileActions.setSort(event.target.value as FileSort));
+  };
+  const onSetOrder = () => {
+    dispatch(fileActions.setOrder());
+  };
 
   const selectOptions = useMemo(() => {
     const options: { value: FileSort; label: string }[] = [
@@ -39,6 +39,11 @@ export const Right: React.FC<RightProps> = ({
     ));
   }, []);
   const filesViewBtns = useMemo(() => {
+    const onSetView = (event: React.MouseEvent<HTMLButtonElement>) => {
+      const target = event.currentTarget as HTMLButtonElement;
+      dispatch(fileActions.setView(+target.value as unknown as FileView));
+    };
+
     const btns: { value: FileView; label: React.ReactElement }[] = [
       { value: FileView.BIG_TILE, label: <img src={View1} alt="" /> },
       { value: FileView.TILE, label: <img src={View2} alt="" /> },
@@ -57,7 +62,7 @@ export const Right: React.FC<RightProps> = ({
         </button>
       );
     });
-  }, [fileView, onSetView]);
+  }, [dispatch, fileView]);
 
   return (
     <FlexBox alignItems="center" className="disk__header-right">
@@ -73,4 +78,4 @@ export const Right: React.FC<RightProps> = ({
       {filesViewBtns}
     </FlexBox>
   );
-};
+});

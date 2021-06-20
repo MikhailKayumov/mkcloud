@@ -38,6 +38,8 @@ const fileView = (state: ApplicationState): FileView => state.file.fileView;
 
 const isLoading = (state: ApplicationState): boolean => state.file.isLoading;
 
+const searchValue = (state: ApplicationState): string => state.file.searchValue;
+
 export const selectors = {
   currentDir,
   files,
@@ -50,5 +52,6 @@ export const selectors = {
   sortBy,
   orderBy,
   fileView,
-  isLoading
+  isLoading,
+  searchValue
 };

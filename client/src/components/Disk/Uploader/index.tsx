@@ -1,38 +1,26 @@
 import React, { useMemo } from 'react';
-import { CancelTokenSource } from 'axios';
 
 import { useSelector } from 'react-redux';
 import { fileSelectors } from 'store/file';
 
 import { FlexBox } from 'utils/components/FlexBox';
 import { UploaderFile } from './UploaderFile';
+import { useCancelUploadFiles } from './useUploadFiles';
 
 import './styles.scss';
 
-export const Uploader: React.FC<{
-  filesCancelers: { id: number; source: CancelTokenSource }[];
-}> = React.memo(({ filesCancelers }): JSX.Element | null => {
+export const Uploader: React.FC = React.memo((): JSX.Element | null => {
   const isFilesUploading = useSelector(fileSelectors.isFilesUploading);
   const files = useSelector(fileSelectors.uploadFiles);
+  const cancelUploadFiles = useCancelUploadFiles();
 
   const filesElements = useMemo(() => {
     return files.map((file) => (
-      <UploaderFile
-        key={`${file.id}_${file.name}`}
-        fileId={file.id}
-        canceler={
-          filesCancelers.find((canceler) => canceler.id === file.id)?.source
-            .cancel
-        }
-      />
+      <UploaderFile key={`${file.id}_${file.name}`} fileId={file.id} />
     ));
-  }, [files, filesCancelers]);
+  }, [files]);
 
   if (!isFilesUploading) return null;
-
-  const onClick = () => {
-    filesCancelers.forEach((canceler) => canceler.source.cancel());
-  };
 
   return (
     <div className="uploader">
@@ -42,7 +30,7 @@ export const Uploader: React.FC<{
         justify="space-between"
       >
         <div className="uploader__title">Загрузка файлов</div>
-        <button className="uploader__close" onClick={onClick}>
+        <button className="uploader__close" onClick={cancelUploadFiles}>
           &times;
         </button>
       </FlexBox>

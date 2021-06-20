@@ -47,13 +47,17 @@ const setView: FileReducerFunction<FileView> = (state, { payload }) => {
   state.fileView = payload;
 };
 
+const toggleLoader: FileReducerFunction<boolean> = (state, { payload }) => {
+  state.isLoading = payload;
+};
+
 const setFiles: FileReducerFunction<{
   files: MyFile[];
   directories: MyFile[];
 }> = (state, { payload }) => {
+  state.isLoading = false;
   state.files = payload.files;
   state.directories = payload.directories;
-  state.isLoading = false;
   sortDirAndFiles(state);
 };
 
@@ -135,6 +139,10 @@ const changeUploadFileProgress: FileReducerFunction<{
   if (file) file.progress = progress;
 };
 
+const setSearchValue: FileReducerFunction<string> = (state, { payload }) => {
+  state.searchValue = payload;
+};
+
 export const actions = {
   setFiles,
   addDir,
@@ -149,5 +157,7 @@ export const actions = {
   changeUploadFileProgress,
   setSort,
   setOrder,
-  setView
+  setView,
+  toggleLoader,
+  setSearchValue
 };

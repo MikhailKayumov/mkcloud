@@ -4,7 +4,21 @@
   min-height: calc(100vh - 50px - 32px);
   margin-top: 32px;
 
+  &__header-left {
+    margin-right: 24px;
+    * {
+      white-space: nowrap;
+    }
+    input {
+      margin-left: 40px;
+      width: 300px;
+    }
+  }
+
   &__header-right {
+    * {
+      white-space: nowrap;
+    }
     button {
       display: flex;
       align-items: center;

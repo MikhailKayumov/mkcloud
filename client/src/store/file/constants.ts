@@ -12,5 +12,6 @@ export const initialState: FileState = {
   sortBy: FileSort.NAME,
   order: FileOrder.ASC,
   fileView: FileView.TABLE,
-  isLoading: true
+  isLoading: true,
+  searchValue: ''
 };

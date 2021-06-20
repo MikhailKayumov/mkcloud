@@ -1,22 +1,23 @@
 import React from 'react';
-import { Canceler } from 'axios';
 
+import { useSelector } from 'react-redux';
+import { fileSelectors } from 'store/file';
 import { ApplicationState } from 'store/types';
 import { MyUploadFile } from 'store/file/types';
 
 import { FlexBox } from 'utils/components/FlexBox';
 
+import { useCancelUploadFile } from './useUploadFiles';
+
 import './styles.scss';
-import { useSelector } from 'react-redux';
-import { fileSelectors } from 'store/file';
 
 export const UploaderFile: React.FC<{
   fileId: number;
-  canceler: Canceler | undefined;
-}> = React.memo(({ fileId, canceler }): JSX.Element | null => {
+}> = React.memo(({ fileId }): JSX.Element | null => {
   const file = useSelector<ApplicationState, MyUploadFile | undefined>(
     (state) => fileSelectors.uploadFile(state, { fileId })
   );
+  const canceler = useCancelUploadFile(fileId);
 
   const onClick = () => canceler && canceler();
 

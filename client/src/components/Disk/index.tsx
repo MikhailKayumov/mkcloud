@@ -1,68 +1,37 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios, { CancelTokenSource } from 'axios';
+import React, { useEffect, useState } from 'react';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
 
-import { fileSelectors, fileThunks } from 'store/file';
+import { fileActions, fileSelectors, fileThunks } from 'store/file';
 
 import { Header } from './Header';
-import { Loader } from '../Loader';
 import { FileList } from './FileList';
 import { CreateDirPopup } from './CreateDirPopup';
 import { Uploader } from './Uploader';
 
 import './styles.scss';
-
-type fileCancelTokenSources = Array<{
-  id: number;
-  source: CancelTokenSource;
-}>;
+import { useUploadFiles } from './Uploader/useUploadFiles';
 
 export const Disk: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
 
+  const uploadFiles = useUploadFiles();
   const currentDir = useSelector(fileSelectors.currentDir);
   const popupShow = useSelector(fileSelectors.popupShow);
   const isLoading = useSelector(fileSelectors.isLoading);
+  const searchName = useSelector(fileSelectors.searchValue);
 
-  const fileCancelTokenSources = useRef<fileCancelTokenSources>([]);
   const [dragEnter, setDragEnter] = useState(false);
 
   useEffect(() => {
-    dispatch(fileThunks.getFiles(currentDir));
+    dispatch(fileThunks.getFiles({ dirId: currentDir, searchName: '' }));
   }, [currentDir, dispatch]);
-
-  const onUploadFiles = useCallback(
-    (files: File[]) => {
-      if (!isLoading) {
-        files.forEach((file) => {
-          const uploadFileId = Date.now();
-
-          const cancelTokenSource = axios.CancelToken.source();
-          fileCancelTokenSources.current.push({
-            id: uploadFileId,
-            source: cancelTokenSource
-          });
-
-          dispatch(
-            fileThunks.uploadFile({
-              id: uploadFileId,
-              file,
-              parent: currentDir,
-              cancelToken: cancelTokenSource.token
-            })
-          ).then(() => {
-            fileCancelTokenSources.current =
-              fileCancelTokenSources.current.filter(
-                (entity) => entity.id !== uploadFileId
-              );
-          });
-        });
-      }
-    },
-    [currentDir, dispatch, isLoading]
-  );
+  useEffect(() => {
+    if (searchName.length > 2 || !searchName) {
+      dispatch(fileThunks.getFiles({ dirId: currentDir, searchName }));
+    }
+  }, [currentDir, dispatch, searchName]);
 
   const onDragEnter = (e: React.DragEvent) => {
     e.preventDefault();
@@ -77,7 +46,7 @@ export const Disk: React.FC = (): JSX.Element => {
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onUploadFiles(Array.from(e.dataTransfer.files || []));
+    uploadFiles(Array.from(e.dataTransfer.files || []));
     setDragEnter(false);
   };
 
@@ -98,10 +67,10 @@ export const Disk: React.FC = (): JSX.Element => {
       onDragLeave={onDragLeave}
       onDragOver={onDragEnter}
     >
-      <Header onUploadFiles={onUploadFiles} />
-      {isLoading ? <Loader /> : <FileList />}
+      <Header />
+      <FileList />
       {popupShow && !isLoading ? <CreateDirPopup /> : null}
-      <Uploader filesCancelers={fileCancelTokenSources.current} />
+      <Uploader />
     </div>
   );
 };
