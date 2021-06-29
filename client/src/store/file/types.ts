@@ -18,15 +18,11 @@ export enum FileView {
 }
 
 export type MyFile = {
-  _id: string;
-  type: string;
+  id: string;
   name: string;
-  path: string;
+  type: string;
   size: number;
-  user: string;
-  parent: string;
-  date: string;
-  children: string[];
+  date: Date;
 };
 
 export type MyUploadFile = {
@@ -38,17 +34,31 @@ export type MyUploadFile = {
 export type FileState = {
   files: MyFile[];
   directories: MyFile[];
-  currentDir: string | null;
-  createDirPopupDisplay: boolean;
-  dirStack: string[];
+  currentDir: string;
   uploadFiles: MyUploadFile[];
   sortBy: FileSort;
   order: FileOrder;
   fileView: FileView;
-  isLoading: boolean;
   searchValue: string;
+  isLoading: boolean;
+  creatingDir: boolean;
 };
 
 export type FileReducerFunction<P = void> = ReducerFunction<FileState, P>;
 
 export type FileExtraReducerFunction = ExtraReducerFunction<FileState>;
+
+export type GetFilesRequest = {
+  parent: string;
+  like: string;
+};
+
+export type GetFilesResponse = {
+  files: MyFile[];
+  directories: MyFile[];
+};
+
+export type CreateDirRequest = {
+  parent: string;
+  name: string;
+};

@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
@@ -8,70 +9,64 @@ import { FlexBox } from 'utils/components/FlexBox';
 import { Input } from 'utils/components/Input';
 import { useUploadFiles } from '../../Uploader/useUploadFiles';
 
+import backIcon from 'assets/img/back-arrow.png';
+import newFolder from 'assets/img/new-folder.png';
+import uploadIcon from 'assets/img/upload-file.png';
+
 export const Left: React.FC = (): JSX.Element => {
+  const { push, location } = useHistory();
+  const [inputValue, setInputValue] = useState('');
+
   const dispatch = useDispatch();
-
-  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const currentDir = useSelector(fileSelectors.currentDir);
-  const searchValue = useSelector(fileSelectors.searchValue);
   const uploadFiles = useUploadFiles();
+  const currentDir = useSelector(fileSelectors.currentDir);
 
-  const [inputValue, setInputValue] = useState(searchValue);
-
-  const onCreateDir = () => {
+  const createDir = () => {
     dispatch(fileActions.startCreatingDir());
   };
-  const onBackDir = () => {
-    dispatch(fileActions.popFromStack());
+  const back = () => {
+    if (location.pathname !== '/') {
+      push(location.pathname.slice(0, location.pathname.lastIndexOf('/')));
+    }
   };
-  const onFilesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const upload = (event: React.ChangeEvent<HTMLInputElement>) => {
     uploadFiles(Array.from(event.target.files || []));
   };
-  const onSearchFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const changeValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
-
-    if (searchTimeout.current) {
-      clearTimeout(searchTimeout.current);
-    }
-
-    searchTimeout.current = setTimeout(() => {
-      searchTimeout.current = null;
-      dispatch(fileActions.setSearchValue(event.target.value));
-    }, 500);
+  };
+  const searchFile = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') dispatch(fileActions.setSearchValue(inputValue));
   };
 
-  useEffect(() => {
-    setInputValue('');
-    dispatch(fileActions.setSearchValue(''));
-  }, [currentDir, dispatch]);
+  useEffect(() => setInputValue(''), [currentDir, dispatch]);
 
   return (
-    <FlexBox alignItems="center" className="disk__header-left">
-      <button className="button disk__btn disk__btnBack" onClick={onBackDir}>
-        Назад
-      </button>
-      <button
-        className="button disk__btn disk__btnCreate"
-        onClick={onCreateDir}
-      >
-        Создать папку
-      </button>
-      <div className="disk__upload">
-        <label htmlFor="diskUploadInput" className="button disk__upload-label">
-          Загрузить файл
-        </label>
-        <input
-          type="file"
-          className="disk__upload-input"
-          id="diskUploadInput"
-          onChange={onFilesUpload}
-          multiple={true}
-        />
-      </div>
+    <FlexBox className="disk__toolbar-left" grow={1}>
+      <FlexBox className="disk__toolbar-left-btns">
+        <button className="button" title="Назад" onClick={back}>
+          <img src={backIcon} alt="" />
+        </button>
+        <button className="button" title="Новая папка" onClick={createDir}>
+          <img src={newFolder} alt="" />
+        </button>
+        <div className="button">
+          <label htmlFor="diskUploadInput" title="Загрузить файл">
+            <img src={uploadIcon} alt="" />
+          </label>
+          <input
+            type="file"
+            id="diskUploadInput"
+            onChange={upload}
+            multiple={true}
+          />
+        </div>
+      </FlexBox>
       <Input
         value={inputValue}
         placeholder="Поиск файла или папки"
-        onChange={onSearchFile}
+        onChange={changeValue}
+        onKeyDown={searchFile}
       />
     </FlexBox>
   );

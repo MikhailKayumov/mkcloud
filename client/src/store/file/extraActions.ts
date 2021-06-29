@@ -1,40 +1,42 @@
 import { ApplicationState } from '../types';
-import { MyFile, FileExtraReducerFunction } from './types';
+import {
+  MyFile,
+  FileExtraReducerFunction,
+  GetFilesResponse,
+  GetFilesRequest,
+  CreateDirRequest
+} from './types';
 
 import { CancelToken } from 'axios';
-import API from 'utils/API';
+import API from 'utils/api';
 
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 import { stateName } from './constants';
 import { actions } from './actions';
 import { fileActions } from './index';
+import { userActions } from '../user';
 
-const getFiles = createAsyncThunk<
-  { files: MyFile[]; directories: MyFile[] },
-  { dirId: string; searchName: string }
->(`${stateName}/getFiles`, async ({ dirId, searchName }, thunkAPI) => {
-  thunkAPI.dispatch(fileActions.toggleLoader(true));
+const getFiles = createAsyncThunk<GetFilesResponse, GetFilesRequest>(
+  `${stateName}/getFiles`,
+  async ({ parent, like }, { dispatch }) => {
+    dispatch(fileActions.toggleLoader(true));
 
-  const result = await API.get('file', {
-    params: {
-      parent: dirId,
-      searchName
-    }
-  });
-
-  return result.data;
-});
-
-const createDir = createAsyncThunk<MyFile, { parent: string; name: string }>(
-  `${stateName}/createDir`,
-  async ({ parent, name }) => {
-    const result = await API.post('file', {
-      parent: parent || null,
-      name,
-      type: 'dir'
+    const result = await API.get('file', {
+      params: { parent, like }
     });
     return result.data;
+  }
+);
+
+const createDir = createAsyncThunk<MyFile, CreateDirRequest>(
+  `${stateName}/createDir`,
+  async ({ parent, name }) => {
+    const result = await API.post('file/createDir', {
+      parent,
+      name
+    });
+    return result.data.dir;
   }
 );
 
@@ -42,49 +44,66 @@ const uploadFile = createAsyncThunk<
   Promise<MyFile>,
   { file: File; parent: string | null; cancelToken: CancelToken; id: number },
   { state: ApplicationState }
->(`${stateName}/uploadFile`, ({ id, file, parent, cancelToken }, thunkAPI) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  if (parent) formData.append('parent', parent);
+>(
+  `${stateName}/uploadFile`,
+  ({ id, file, parent, cancelToken }, { dispatch }) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (parent) formData.append('parent', parent);
 
-  const result = API.post('file/upload', formData, {
-    cancelToken: cancelToken,
-    timeout: 0,
-    onUploadProgress: (progressEvent) => {
-      const totalLength = progressEvent.lengthComputable
-        ? progressEvent.total
-        : progressEvent.target.getResponseHeader('content-length') ||
-          progressEvent.target.getResponseHeader(
-            'x-decompressed-content-length'
+    const result = API.post('file/upload', formData, {
+      cancelToken: cancelToken,
+      timeout: 0,
+      onUploadProgress: (progressEvent) => {
+        const totalLength = progressEvent.lengthComputable
+          ? progressEvent.total
+          : progressEvent.target.getResponseHeader('content-length') ||
+            progressEvent.target.getResponseHeader(
+              'x-decompressed-content-length'
+            );
+
+        if (totalLength) {
+          const progress = Math.round(
+            (progressEvent.loaded * 100) / totalLength
           );
-
-      if (totalLength) {
-        const progress = Math.round((progressEvent.loaded * 100) / totalLength);
-        thunkAPI.dispatch(
-          fileActions.changeUploadFileProgress({ fileId: id, progress })
-        );
+          dispatch(
+            fileActions.changeUploadFileProgress({ fileId: id, progress })
+          );
+        }
       }
-    }
-  });
+    });
 
-  thunkAPI.dispatch(
-    fileActions.addUploadFile({
-      id,
-      name: file.name,
-      progress: 0
-    })
-  );
+    dispatch(
+      fileActions.addUploadFile({
+        id,
+        name: file.name,
+        progress: 0
+      })
+    );
 
-  return result
-    .then((data) => data.data)
-    .catch((e) => console.log(e))
-    .finally(() => thunkAPI.dispatch(fileActions.removeUploadFile(id)));
+    return result
+      .then((data) => {
+        dispatch(userActions.changeSize(data.data.size));
+        return data.data.file;
+      })
+      .catch((e) => alert(e))
+      .finally(() => dispatch(fileActions.removeUploadFile(id)));
+  }
+);
+
+const deleteFile = createAsyncThunk<
+  { id: string; type: string },
+  { id: string; type: string }
+>(`${stateName}/deleteFile`, async ({ id, type }, { dispatch }) => {
+  const result = await API.delete(`file/delete?fileId=${id}`);
+  dispatch(userActions.changeSize(-result.data.size));
+  return { id, type };
 });
 
-const downloadFile = createAsyncThunk<void, MyFile>(
+const downloadFile = createAsyncThunk<void, { id: string; name: string }>(
   `${stateName}/downloadFile`,
-  async (file) => {
-    const result = await API.get(`file/download?fileId=${file._id}`, {
+  async ({ id, name }) => {
+    const result = await API.get(`file/download?fileId=${id}`, {
       responseType: 'blob'
     });
 
@@ -94,22 +113,12 @@ const downloadFile = createAsyncThunk<void, MyFile>(
       link.style.display = 'none';
 
       link.href = downloadURL;
-      console.log(downloadURL);
-      link.download = file.name;
+      link.download = name;
 
       document.body.appendChild(link);
       link.click();
       link.remove();
     }
-  }
-);
-
-const deleteFile = createAsyncThunk<{ id: string; type: string }, MyFile>(
-  `${stateName}/deleteFile`,
-  async (file) => {
-    const { data } = await API.delete(`file/delete?fileId=${file._id}`);
-    console.log(data?.message || '');
-    return { id: file._id, type: file.type };
   }
 );
 

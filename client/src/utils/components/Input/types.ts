@@ -18,4 +18,5 @@ export type InputProps = {
   placeholder?: string;
   name?: string;
   onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement> | undefined;
 };

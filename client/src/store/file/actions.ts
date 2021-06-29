@@ -88,36 +88,22 @@ const deleteFile: FileReducerFunction<{ id: string; type: string }> = (
   { payload }
 ) => {
   if (payload.type === 'dir') {
-    state.directories = state.directories.filter(
-      (dir) => dir._id !== payload.id
-    );
+    state.directories = state.directories.filter(({ id }) => id !== payload.id);
   } else {
-    state.files = state.files.filter((file) => file._id !== payload.id);
+    state.files = state.files.filter(({ id }) => id !== payload.id);
   }
 };
 
-const toggleCreateDirPopupDisplay: FileReducerFunction<boolean> = (
-  state,
-  { payload }
-) => {
-  state.createDirPopupDisplay = payload;
+const startCreatingDir: FileReducerFunction = (state) => {
+  state.creatingDir = true;
 };
 
-const setCurrentDir: FileReducerFunction<string | null> = (
-  state,
-  { payload }
-) => {
+const stopCreatingDir: FileReducerFunction = (state) => {
+  state.creatingDir = false;
+};
+
+const setCurrentDir: FileReducerFunction<string> = (state, { payload }) => {
   state.currentDir = payload;
-};
-
-const pushToStack: FileReducerFunction<string> = (state, { payload }) => {
-  state.dirStack.push(payload);
-};
-
-const popFromStack: FileReducerFunction = (state) => {
-  if (state.dirStack.length) {
-    state.currentDir = state.dirStack.pop() || null;
-  }
 };
 
 const addUploadFile: FileReducerFunction<MyUploadFile> = (
@@ -147,10 +133,9 @@ export const actions = {
   setFiles,
   addDir,
   addFile,
+  startCreatingDir,
+  stopCreatingDir,
   setCurrentDir,
-  toggleCreateDirPopupDisplay,
-  pushToStack,
-  popFromStack,
   deleteFile,
   addUploadFile,
   removeUploadFile,

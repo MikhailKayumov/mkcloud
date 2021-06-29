@@ -1,0 +1,62 @@
+.root {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 20px 24px;
+  z-index: 100;
+  color: #2b2222;
+  border-radius: 10px;
+  width: 600px;
+  &__error {
+    background-color: rgba(255, 168, 168, 0.85);
+  }
+  &__title {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: 700;
+  }
+  &__titleClose {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 24px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #2b2222;
+    width: 30px;
+    height: 30px;
+    transition: background-color 0.16s ease-out;
+    border-radius: 50%;
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    &:active {
+      background-color: rgba(255, 255, 255, 0.26);
+    }
+  }
+  &__body {
+    margin-top: 16px;
+    > * {
+      margin-top: 8px;
+      padding: 0 12px;
+    }
+  }
+}
+.alert {
+  &EnterActive {
+    animation: alert 500ms ease-in-out forwards;
+  }
+  &ExitActive {
+    animation: alert 500ms ease-in-out forwards reverse;
+  }
+}
+
+@keyframes alert {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

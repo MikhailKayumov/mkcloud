@@ -1,124 +1,174 @@
 @use '../../utils/styles/_colors' as c;
 
 .disk {
-  min-height: calc(100vh - 50px - 32px);
-  margin-top: 32px;
-
-  &__header-left {
-    margin-right: 24px;
-    * {
-      white-space: nowrap;
-    }
-    input {
-      margin-left: 40px;
-      width: 300px;
-    }
+  padding: 24px 0;
+  height: 100%;
+  flex: 1;
+  &__drop-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex: 1;
+    margin: 24px 0;
+    border: 1px dashed c.$font-color;
+    font-size: 40px;
   }
-
-  &__header-right {
-    * {
-      white-space: nowrap;
-    }
-    button {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      margin: 0;
-      width: 36px;
-      height: 36px;
-      cursor: pointer;
-      line-height: 1;
-      border: none;
-      background: transparent;
-      transition: all 0.16s ease-in-out;
-      border-radius: 8px;
-      &:hover {
-        background-color: rgba(86, 104, 133, 0.21);
+  &__toolbar {
+    height: 36px;
+    margin-bottom: 24px;
+    &-left {
+      margin-right: 32px;
+      &-btns {
+        margin-right: 32px;
       }
-      img {
+      .button {
         display: block;
-      }
-      &.order-btn {
-        width: 70px;
-        margin-right: 12px;
+        width: 36px;
+        height: 36px;
+        padding: 6px;
+        &:not(:last-child) {
+          margin-right: 12px;
+        }
         img {
-          transition: transform 0.22s ease-in-out;
+          width: 100%;
+          height: auto;
+        }
+        label {
+          display: block;
+          cursor: pointer;
+        }
+      }
+      input {
+        &[type="text"] {
+          flex: 1;
+          display: block;
+          border-width: 1px;
+          border-radius: 4px;
+          transition: all 0.16s ease-in-out;
+          &:hover, &:focus {
+            box-shadow: 0 0 5px 0 c.$font-color;
+          }
+        }
+        &[type="file"] {
+          display: none;
+        }
+      }
+    }
+    &-right {
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        line-height: 1;
+        border: none;
+        background: transparent;
+        transition: all 0.16s ease-in-out;
+        border-radius: 4px;
+        &:hover {
+          background-color: rgba(86, 104, 133, 0.21);
+        }
+        img {
+          display: block;
+        }
+        &.order-btn {
           width: 60px;
-        }
-        &.asc {
+          margin-right: 2px;
           img {
-            transform: scale(1, 1)
-          };
+            transition: transform 0.22s ease-in-out;
+            width: 46px;
+          }
+          &.asc {
+            img {
+              transform: scale(1, 1)
+            };
+          }
+          &.desc {
+            img {
+              transform: scale(1, -1)
+            };
+          }
         }
-        &.desc {
+        &.type-view-btn {
+          margin-left: 2px;
           img {
-            transform: scale(1, -1)
-          };
+            width: 64%;
+          }
+          &.active {
+            cursor: default;
+            background-color: rgba(86, 104, 133, 0.21);
+          }
         }
       }
-      &.type-view-btn {
-        margin-left: 4px;
-        img {
-          width: 66%;
-        }
-        &.active {
-          cursor: default;
+      select {
+        margin-right: 24px;
+        padding: 0 4px;
+        width: 120px;
+        height: 100%;
+        outline: none;
+        border: none;
+        background: transparent;
+        font-size: 18px;
+        border-radius: 4px;
+        transition: all 0.16s ease-in-out;
+        cursor: pointer;
+        &:hover {
           background-color: rgba(86, 104, 133, 0.21);
         }
       }
     }
-    select {
-      margin-right: 20px;
-      padding: 0 8px;
-      width: 120px;
-      height: 100%;
-      outline: none;
-      border: none;
-      background: transparent;
-      font-size: 18px;
-      border-radius: 8px;
-      transition: all 0.16s ease-in-out;
-      cursor: pointer;
-      &:hover {
-        background-color: rgba(86, 104, 133, 0.21);
+  }
+}
+.user-info {
+  margin-bottom: 36px;
+  padding: 24px 32px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  box-shadow: 0 3px 17px 0 rgba(0,0,0,0.2);
+  &__avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-right: 20px;
+    box-shadow: -3px 3px 17px 0 rgba(0,0,0,0.2);
+  }
+  &__name {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+  }
+  &__space {
+    > span {
+      &:first-child {
+        margin-bottom: 6px;
       }
     }
   }
-
-  &__btn {
-    display: block;
-  }
-
-  &__btnCreate {
-    margin-left: 10px;
-  }
-
-  &__upload {
-    height: 36px;
-  }
-
-  &__upload-input {
-    display: none;
-  }
-
-  &__upload-label {
-    margin-left: 10px;
-    display: inline-block;
+  &__circle-space {
+    margin-left: 18px;
+    svg {
+      display: block;
+      circle {
+        fill: transparent;
+        stroke-width: 8px;
+        &.background {
+          stroke: #cacaca;
+        }
+        &.progress {
+          stroke: c.$font-color;
+          transition: stroke-dashoffset .25s ease-in-out;
+        }
+      }
+    }
   }
 }
 
-.drop-area {
-  width: 100%;
-  height: calc(100vh - 50px - 40px);
-  margin: 20px 0;
-  border: 1px dashed c.$font-color;
-  font-size: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
+// creating dir popup
 .popup {
   position: fixed;
   top: 0;
@@ -165,5 +215,36 @@
   }
   input {
     margin: 20px 0;
+  }
+}
+.popup-wrap-enter-active {
+  animation: popup-wrap 0.2s ease-out forwards;
+  & .popup__content {
+    animation: popup-content 0.3s ease-out forwards;
+  }
+}
+.popup-wrap-exit-active {
+  animation: popup-wrap 0.2s ease-out reverse forwards;
+  & .popup__content {
+    animation: popup-content 0.2s ease-out reverse;
+  }
+}
+
+@keyframes popup-wrap {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes popup-content {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -14,8 +14,8 @@ const filesAndDirs = createSelector(directories, files, (res1, res2) => {
   return [...res1, ...res2];
 });
 
-const popupShow = (state: ApplicationState): boolean =>
-  state.file.createDirPopupDisplay;
+const creatingDir = (state: ApplicationState): boolean =>
+  state.file.creatingDir;
 
 const uploadFiles = (state: ApplicationState): MyUploadFile[] =>
   state.file.uploadFiles;
@@ -40,10 +40,19 @@ const isLoading = (state: ApplicationState): boolean => state.file.isLoading;
 
 const searchValue = (state: ApplicationState): string => state.file.searchValue;
 
+const tableView = (state: ApplicationState): boolean =>
+  state.file.fileView === FileView.TABLE;
+
+const bigTile = (state: ApplicationState): boolean =>
+  state.file.fileView === FileView.BIG_TILE;
+
+const ascOrder = (state: ApplicationState): boolean =>
+  state.file.order === FileOrder.ASC;
+
 export const selectors = {
   currentDir,
   files,
-  popupShow,
+  creatingDir,
   isFilesUploading,
   uploadFiles,
   uploadFile,
@@ -53,5 +62,8 @@ export const selectors = {
   orderBy,
   fileView,
   isLoading,
-  searchValue
+  searchValue,
+  tableView,
+  bigTile,
+  ascOrder
 };

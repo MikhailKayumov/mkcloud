@@ -1,80 +1,25 @@
 import React, { useMemo } from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition } from 'react-transition-group';
 
 import { useSelector } from 'react-redux';
 import { fileSelectors } from 'store/file';
-import { FileView } from 'store/file/types';
+
+import { File } from '../File';
+import { Table } from './Table';
+import { Tile } from './Tile';
 
 import './styles.scss';
-import { File } from '../File';
-import { FlexBox } from 'utils/components/FlexBox';
-import { Loader } from '../../Loader';
 
 export const FileList: React.FC = (): JSX.Element => {
-  const isLoading = useSelector(fileSelectors.isLoading);
   const files = useSelector(fileSelectors.filesAndDirs);
-  const fileView = useSelector(fileSelectors.fileView);
-
-  const list = useMemo(() => {
+  const isTable = useSelector(fileSelectors.tableView);
+  const list = useMemo<React.ReactElement[]>(() => {
     return files.map((file) => (
-      <CSSTransition key={file._id} timeout={500} classNames="file">
+      <CSSTransition key={file.id} timeout={450} classNames="file-anim">
         <File file={file} />
       </CSSTransition>
     ));
   }, [files]);
 
-  if (fileView === FileView.TABLE) {
-    return (
-      <div className="filelist">
-        <div className="filelist__header">
-          <div className="filelist__name">Название</div>
-          <div className="filelist__date">Дата</div>
-          <div className="filelist__size">Размер</div>
-        </div>
-        <TransitionGroup className="filelist__list">
-          {isLoading && (
-            <CSSTransition appear timeout={500} classNames="loader">
-              <Loader />
-            </CSSTransition>
-          )}
-          {!isLoading && !list.length ? (
-            <CSSTransition appear timeout={500} classNames="no-files">
-              <FlexBox
-                alignItems="center"
-                justify="center"
-                className="no-files"
-              >
-                Папка пуста
-              </FlexBox>
-            </CSSTransition>
-          ) : null}
-          {!isLoading && list.length ? list : null}
-        </TransitionGroup>
-      </div>
-    );
-  } else {
-    return (
-      <div className="filelist">
-        <TransitionGroup className="filelist__plate">
-          {isLoading && (
-            <CSSTransition appear timeout={500} classNames="loader">
-              <Loader />
-            </CSSTransition>
-          )}
-          {!isLoading && !list.length ? (
-            <CSSTransition appear timeout={500} classNames="no-files">
-              <FlexBox
-                alignItems="center"
-                justify="center"
-                className="no-files"
-              >
-                Папка пуста
-              </FlexBox>
-            </CSSTransition>
-          ) : null}
-          {!isLoading && list.length ? list : null}
-        </TransitionGroup>
-      </div>
-    );
-  }
+  return isTable ? <Table list={list} /> : <Tile list={list} />;
 };

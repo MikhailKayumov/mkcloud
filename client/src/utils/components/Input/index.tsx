@@ -20,7 +20,8 @@ export const Input: ForwardRefExoticComponent<
       type = 'text',
       placeholder = '',
       name = '',
-      onChange = undefined
+      onChange = undefined,
+      onKeyDown = undefined
     },
     ref
   ): JSX.Element => {
@@ -33,6 +34,7 @@ export const Input: ForwardRefExoticComponent<
         className={classes.input}
         name={name}
         onChange={onChange}
+        onKeyDown={onKeyDown}
       />
     );
   }

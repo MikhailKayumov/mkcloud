@@ -1,23 +1,36 @@
-import { AuthServerRequest, UserReducerFunction } from './types';
+import { AuthServerResponse, UserReducerFunction } from './types';
+import $jwt from 'utils/jwt';
 
-const setUser: UserReducerFunction<AuthServerRequest> = (
-  state,
-  { payload }
-) => {
+const login: UserReducerFunction<AuthServerResponse> = (state, { payload }) => {
   state.currentUser = payload.user;
-  state.loading = false;
   state.isAuth = true;
-  localStorage.setItem('jwt', payload.token);
+  $jwt.set(payload.token);
 };
 
-const logout: UserReducerFunction<void> = (state) => {
+const logout: UserReducerFunction = (state) => {
   state.currentUser = null;
   state.isAuth = false;
+  $jwt.remove();
+};
+
+const showLoading: UserReducerFunction = (state) => {
+  state.loading = true;
+};
+
+const hideLoading: UserReducerFunction = (state) => {
   state.loading = false;
-  localStorage.removeItem('jwt');
+};
+
+const changeSize: UserReducerFunction<number> = (state, { payload }) => {
+  if (state.currentUser) {
+    state.currentUser.usedSpace += payload;
+  }
 };
 
 export const actions = {
-  setUser,
-  logout
+  login,
+  logout,
+  showLoading,
+  hideLoading,
+  changeSize
 };

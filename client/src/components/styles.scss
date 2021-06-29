@@ -30,6 +30,8 @@ textarea, input, button, select {
   color: c.$background-color;
   background-color: c.$font-color;
   border-radius: 4px;
+  font-size: 16px;
+  line-height: 22px;
   font-weight: 700;
   padding: 8px 16px;
   transition: all 0.21s ease-out;
@@ -39,6 +41,11 @@ textarea, input, button, select {
   }
   &:active {
     background-color: c.$font-color;
+  }
+  &:disabled {
+    background-color: #cfcfcf;
+    color: #818181;
+    cursor: default;
   }
 }
 
@@ -50,6 +57,8 @@ textarea, input, button, select {
 .wrap {
   max-width: 1140px;
   margin: 0 auto;
+  padding-top: 56px;
+  min-height: 100vh;
 }
 
 .content-loader {

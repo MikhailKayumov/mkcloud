@@ -1,76 +1,24 @@
 import React, { useEffect, useState } from 'react';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'store';
-
-import { fileSelectors, fileThunks } from 'store/file';
-
-import { Header } from './Header';
-import { FileList } from './FileList';
-import { CreateDirPopup } from './CreateDirPopup/';
-import { Uploader } from './Uploader';
+import { Disk } from './Disk';
 
 import './styles.scss';
-import { useUploadFiles } from './Uploader/useUploadFiles';
 
-export const Disk: React.FC = (): JSX.Element => {
-  const dispatch = useDispatch();
+const excludedPath = ['/login', '/registration'];
 
-  const uploadFiles = useUploadFiles();
-  const currentDir = useSelector(fileSelectors.currentDir);
-  const popupShow = useSelector(fileSelectors.popupShow);
-  const isLoading = useSelector(fileSelectors.isLoading);
-  const searchName = useSelector(fileSelectors.searchValue);
+export const DiskPage: React.FC = (): JSX.Element | null => {
+  const { pathname } = useLocation();
+  const [afterLogin, setAfterLogin] = useState(excludedPath.includes(pathname));
 
-  const [dragEnter, setDragEnter] = useState(false);
+  useEffect(() => {
+    setAfterLogin(excludedPath.includes(pathname));
+  }, [pathname]);
 
-  // useEffect(() => {
-  //   dispatch(fileThunks.getFiles({ dirId: currentDir, searchName: '' }));
-  // }, [currentDir, dispatch]);
-  /*useEffect(() => {
-    if (searchName.length > 2 || !searchName) {
-      dispatch(fileThunks.getFiles({ dirId: currentDir, searchName }));
-    }
-  }, [currentDir, dispatch, searchName]);*/
-
-  const onDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragEnter(true);
-  };
-  const onDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragEnter(false);
-  };
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    uploadFiles(Array.from(e.dataTransfer.files || []));
-    setDragEnter(false);
-  };
-
-  return dragEnter && !isLoading ? (
-    <div
-      className="drop-area"
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
-      onDragOver={onDragEnter}
-      onDrop={onDrop}
-    >
-      Перетащите файлы сюда
-    </div>
-  ) : (
-    <div
-      className="disk"
-      onDragEnter={onDragEnter}
-      onDragLeave={onDragLeave}
-      onDragOver={onDragEnter}
-    >
-      <Header />
-      <FileList />
-      {popupShow && !isLoading ? <CreateDirPopup /> : null}
-      <Uploader />
-    </div>
+  return (
+    <Switch>
+      {!afterLogin && <Route path="/" component={Disk} />}
+      <Redirect to="/" />
+    </Switch>
   );
 };

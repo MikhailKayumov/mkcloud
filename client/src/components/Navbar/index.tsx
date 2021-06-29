@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
-import { userActions, userSelectors } from 'store/user';
+import { userActions, userSelectors, userThunks } from 'store/user';
 
 import { FlexBox } from 'utils/components/FlexBox';
 
@@ -15,7 +15,9 @@ export const Navbar: React.FC = (): JSX.Element => {
   const isAuth = useSelector(userSelectors.isAuth);
 
   const logout = () => {
-    dispatch(userActions.logout());
+    dispatch(userThunks.logout()).then(() => {
+      dispatch(userActions.logout());
+    });
   };
 
   return (
@@ -24,7 +26,7 @@ export const Navbar: React.FC = (): JSX.Element => {
         <img src={Logo} alt="" className="navbar__logo" />
         <div className="navbar__header">MKCloud</div>
         {isAuth ? (
-          <div className="navbar__login" onClick={logout}>
+          <div className="navbar__logout" onClick={logout}>
             Выйти
           </div>
         ) : (

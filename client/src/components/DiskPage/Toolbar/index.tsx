@@ -4,9 +4,9 @@ import { FlexBox } from 'utils/components/FlexBox';
 import { Left } from './Left';
 import { Right } from './Right';
 
-export const CtrlPanel: React.FC = (): JSX.Element => {
+export const Toolbar: React.FC = (): JSX.Element => {
   return (
-    <FlexBox justify="space-between" className="disk__header">
+    <FlexBox justify="space-between" className="disk__toolbar">
       <Left />
       <Right />
     </FlexBox>

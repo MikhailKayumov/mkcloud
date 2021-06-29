@@ -8,33 +8,39 @@ import { UploaderFile } from './UploaderFile';
 import { useCancelUploadFiles } from './useUploadFiles';
 
 import './styles.scss';
+import { CSSTransition } from 'react-transition-group';
 
 export const Uploader: React.FC = React.memo((): JSX.Element | null => {
   const isFilesUploading = useSelector(fileSelectors.isFilesUploading);
   const files = useSelector(fileSelectors.uploadFiles);
   const cancelUploadFiles = useCancelUploadFiles();
-
   const filesElements = useMemo(() => {
     return files.map((file) => (
       <UploaderFile key={`${file.id}_${file.name}`} fileId={file.id} />
     ));
   }, [files]);
 
-  if (!isFilesUploading) return null;
-
   return (
-    <div className="uploader">
-      <FlexBox
-        className="uploader__header"
-        alignItems="center"
-        justify="space-between"
-      >
-        <div className="uploader__title">Загрузка файлов</div>
-        <button className="uploader__close" onClick={cancelUploadFiles}>
-          &times;
-        </button>
-      </FlexBox>
-      {filesElements}
-    </div>
+    <CSSTransition
+      timeout={500}
+      classNames="loader"
+      in={isFilesUploading}
+      unmountOnExit
+      mountOnEnter
+    >
+      <div className="uploader">
+        <FlexBox
+          className="uploader__header"
+          alignItems="center"
+          justify="space-between"
+        >
+          <div className="uploader__title">Загрузка файлов</div>
+          <button className="uploader__close" onClick={cancelUploadFiles}>
+            &times;
+          </button>
+        </FlexBox>
+        {filesElements}
+      </div>
+    </CSSTransition>
   );
 });

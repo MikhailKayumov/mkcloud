@@ -1,47 +1,46 @@
 import './styles.scss';
 
-import React, { useEffect } from 'react';
-import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'store';
-import { userSelectors, userThunks } from 'store/user';
+import { userActions, userSelectors, userThunks } from 'store/user';
 
 import { FlexBox } from 'utils/components/FlexBox';
 import { Navbar } from './Navbar';
-import { Loader } from './Loader';
-import { Disk } from './Disk';
-import { Login } from './Auth/Login';
-import { Registration } from './Auth/Registration';
+import { DiskPage } from './DiskPage';
+import { AuthPage } from './AuthPage';
+import $jwt from '../utils/jwt';
 
-const App: React.FC = (): JSX.Element => {
-  const isAuth = useSelector(userSelectors.isAuth);
-  const isLoading = useSelector(userSelectors.isLoading);
+const App: React.FC = (): JSX.Element | null => {
+  const [isInit, setIsInit] = useState(false);
   const dispatch = useDispatch();
+  const isAuth = useSelector(userSelectors.isAuth);
 
   useEffect(() => {
-    dispatch(userThunks.auth());
+    if ($jwt.has()) {
+      dispatch(userActions.showLoading());
+      dispatch(userThunks.refresh()).then(({ meta }) => {
+        if (meta.requestStatus === 'rejected') {
+          dispatch(userActions.logout());
+        }
+        dispatch(userActions.hideLoading());
+        setIsInit(true);
+      });
+    } else {
+      setIsInit(true);
+    }
   }, [dispatch]);
 
-  const content = !isAuth ? (
-    <Switch>
-      <Route path="/registration" component={Registration} />
-      <Route path="/login" component={Login} />
-      <Redirect to="/login" />
-    </Switch>
-  ) : (
-    <Switch>
-      <Route exact path="/" component={Disk} />
-      <Redirect to="/" />
-    </Switch>
-  );
+  const content = !isAuth ? <AuthPage /> : <DiskPage />;
 
   return (
     <BrowserRouter>
       <div id="app">
         <Navbar />
         <FlexBox direction="column" className="wrap">
-          {isLoading ? <Loader /> : content}
+          {isInit ? content : null}
         </FlexBox>
       </div>
     </BrowserRouter>

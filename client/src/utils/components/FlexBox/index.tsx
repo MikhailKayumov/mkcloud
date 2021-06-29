@@ -35,7 +35,9 @@ export const FlexBox: ForwardRefExoticComponent<
         justifyContent: justify,
         alignItems,
         alignContent,
-        flex: `${grow} ${shrink} ${basis}`
+        flex: `${grow} ${shrink} ${
+          typeof basis === 'number' ? `${basis}px` : basis
+        }`
       }),
       [alignContent, alignItems, basis, direction, grow, justify, shrink, wrap]
     );

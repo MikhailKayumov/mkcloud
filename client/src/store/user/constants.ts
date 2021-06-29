@@ -5,5 +5,5 @@ export const stateName = 'user';
 export const initialState: UserState = {
   currentUser: null,
   isAuth: false,
-  loading: true
+  loading: false
 };

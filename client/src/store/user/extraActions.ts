@@ -1,79 +1,73 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import API from 'utils/API';
 
-import { AuthData, AuthServerRequest, UserExtraReducerFunction } from './types';
+import $api from 'utils/api';
+
+import {
+  AuthServerResponse,
+  LoginData,
+  LoginError,
+  RegistrationData,
+  RegistrationError,
+  UserExtraReducerFunction
+} from './types';
+
 import { stateName } from './constants';
 import { actions } from './actions';
 
-const registration = createAsyncThunk<Promise<unknown>, AuthData>(
-  `${stateName}/registration`,
-  async ({ email, password }) => {
-    try {
-      const result = await API.post('auth/registration', {
-        email,
-        password
-      });
-
-      return result.data;
-    } catch (e) {
-      const { message, errors } = e.response.data;
-
-      let msg = message;
-      if (errors && Array.isArray(errors)) {
-        msg += `\n${errors.map((error) => error.msg).join('\n')}`;
-      }
-
-      alert(msg);
-    }
-  }
-);
-
-const login = createAsyncThunk<AuthServerRequest, AuthData>(
-  `${stateName}/login`,
-  async ({ email, password }) => {
-    const result = await API.post('auth/login', {
-      email,
-      password
-    });
-
+const registration = createAsyncThunk<
+  AuthServerResponse,
+  RegistrationData,
+  { rejectValue: RegistrationError }
+>(`${stateName}/registration`, async (data, { rejectWithValue }) => {
+  try {
+    const result = await $api.post('auth/registration', data);
     return result.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
   }
-);
+});
 
-const auth = createAsyncThunk<AuthServerRequest>(
-  `${stateName}/auth`,
-  async () => {
-    const result = await API.get('auth/auth');
+const login = createAsyncThunk<
+  AuthServerResponse,
+  LoginData,
+  { rejectValue: LoginError }
+>(`${stateName}/login`, async ({ email, password }, { rejectWithValue }) => {
+  try {
+    const result = await $api.post('auth/login', { email, password });
     return result.data;
+  } catch (error) {
+    return rejectWithValue(error.response.data);
   }
-);
+});
+
+const logout = createAsyncThunk<void>(`${stateName}/logout`, async () => {
+  await $api.get('auth/logout');
+});
+
+const refresh = createAsyncThunk<
+  AuthServerResponse,
+  void,
+  { rejectValue: void }
+>(`${stateName}/refresh`, async (_, { rejectWithValue }) => {
+  try {
+    const result = await $api.get('auth/refresh');
+    return result.data;
+  } catch {
+    return rejectWithValue();
+  }
+});
 
 export const thunks = {
   registration,
   login,
-  auth
+  logout,
+  refresh
 };
 
 export const extraActions: UserExtraReducerFunction = (builder): void => {
   builder
-    .addCase(login.pending, (state) => {
-      state.loading = true;
-    })
-    .addCase(login.fulfilled, actions.setUser)
-    .addCase(login.rejected, (state) => {
-      state.currentUser = null;
-      state.isAuth = false;
-      state.loading = false;
-      localStorage.removeItem('jwt');
-    })
-    .addCase(auth.pending, (state) => {
-      state.loading = true;
-    })
-    .addCase(auth.fulfilled, actions.setUser)
-    .addCase(auth.rejected, (state) => {
-      state.currentUser = null;
-      state.isAuth = false;
-      state.loading = false;
-      localStorage.removeItem('jwt');
-    });
+    .addCase(registration.fulfilled, actions.login)
+    .addCase(login.fulfilled, actions.login)
+    .addCase(refresh.fulfilled, actions.login)
+    .addCase(logout.fulfilled, actions.logout);
 };
