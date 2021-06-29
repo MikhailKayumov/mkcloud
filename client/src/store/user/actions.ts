@@ -1,5 +1,9 @@
-import { AuthServerResponse, UserReducerFunction } from './types';
+import { AuthServerResponse, User, UserReducerFunction } from './types';
 import $jwt from 'utils/jwt';
+
+const setUser: UserReducerFunction<User> = (state, { payload }) => {
+  state.currentUser = payload;
+};
 
 const login: UserReducerFunction<AuthServerResponse> = (state, { payload }) => {
   state.currentUser = payload.user;
@@ -32,5 +36,6 @@ export const actions = {
   logout,
   showLoading,
   hideLoading,
-  changeSize
+  changeSize,
+  setUser
 };

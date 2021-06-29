@@ -28,6 +28,7 @@ const app = express();
 app.use(corsMiddleware);
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.static('static'));
 app.use(fileUpload(FILE_UPLOAD_OPTS));
 app.use(express.static(STATIC_PATH));
 app.use(AUTH_CHECK_PATHS, authMiddleware);

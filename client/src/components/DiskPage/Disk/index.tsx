@@ -32,6 +32,13 @@ export const Disk: React.FC = (): JSX.Element => {
     });
   }, [dispatch, pathname, like]);
 
+  useEffect(
+    () => () => {
+      dispatch(fileActions.clearState());
+    },
+    [dispatch]
+  );
+
   return (
     <DragAndDropFiles disabled={isLoading}>
       <UserInfo />

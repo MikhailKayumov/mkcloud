@@ -64,7 +64,6 @@ export type DeleteFileResponseData = { size: number };
 export type DownloadFileParams = {
   fileId: string;
 };
-export type DownloadFileResponseData = { size: number };
 
 // Requests
 export type BodyRequest<
@@ -93,4 +92,3 @@ export type GetFilesResponse = Response<GetFilesResponseData>;
 export type CreateDirResponse = Response<CreateDirResponseData>;
 export type UploadFileResponse = Response<UploadFileResponseData>;
 export type DeleteFileResponse = Response<DeleteFileResponseData>;
-export type DownloadFileResponse = Response<DownloadFileResponseData>;

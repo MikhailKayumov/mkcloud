@@ -7,6 +7,7 @@ import {
   FileState,
   FileView
 } from './types';
+import { initialState } from './constants';
 
 function sortDirAndFiles(state: FileState): void {
   [state.directories, state.files].forEach((arr) => {
@@ -129,6 +130,10 @@ const setSearchValue: FileReducerFunction<string> = (state, { payload }) => {
   state.searchValue = payload;
 };
 
+const clearState: FileReducerFunction = () => {
+  return initialState;
+};
+
 export const actions = {
   setFiles,
   addDir,
@@ -144,5 +149,6 @@ export const actions = {
   setOrder,
   setView,
   toggleLoader,
-  setSearchValue
+  setSearchValue,
+  clearState
 };

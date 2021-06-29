@@ -3,6 +3,7 @@
   "dbUrl": "mongodb://localhost:27017/cloud-disk",
   "baseAPIPath": "/api/v1",
   "userFileDir": "userFiles",
+  "avatarsDir": "static/avatars",
   "jwtAccessSecret": "mkmind_access-secret_key_87387198479812",
   "jwtRefreshSecret": "mkmind_refresh_secret_key_1902389128973",
   "jwtAccessTokenLive": 900000,

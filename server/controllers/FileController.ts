@@ -6,6 +6,7 @@ import FileService from '../services/FileService';
 import UserService from 'services/UserService';
 
 import {
+  BodyRequest,
   CreateDirRequest,
   CreateDirResponse,
   DeleteFileRequest,
@@ -17,6 +18,7 @@ import {
   UploadFileResponse
 } from 'controllers/types';
 
+import UserDto from 'dot/UserDto';
 import RequestError from 'errors/RequestError';
 
 class FileController {
@@ -115,17 +117,39 @@ class FileController {
     }
   }
 
-  // public async uploadAvatar(
-  //   { params: { userId }, query: { fileId } }: Request<{ userId: ObjectId }>,
-  //   res: Response<string | { message: string }>
-  // ) {
-  //   try {
-  //     console.log(123);
-  //   } catch (e) {
-  //     console.log(e);
-  //     return res.status(500).json({ message: e.message });
-  //   }
-  // }
+  public async uploadAvatar(
+    req: BodyRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const user = await UserService.getById(req.body.jwt.userId);
+
+      const avatar = req.files?.file as UploadedFile;
+      user.avatar = await FileService.uploadAvatar(avatar);
+      await user.save();
+
+      return res.json(new UserDto(user));
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async deleteAvatar(
+    req: BodyRequest,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const user = await UserService.getById(req.body.jwt.userId);
+      await FileService.deleteAvatar(user.avatar);
+      user.avatar = '';
+      await user.save();
+      return res.json(new UserDto(user));
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export default new FileController();

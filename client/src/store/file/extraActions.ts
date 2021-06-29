@@ -16,6 +16,7 @@ import { stateName } from './constants';
 import { actions } from './actions';
 import { fileActions } from './index';
 import { userActions } from '../user';
+import { User } from '../user/types';
 
 const getFiles = createAsyncThunk<GetFilesResponse, GetFilesRequest>(
   `${stateName}/getFiles`,
@@ -122,12 +123,35 @@ const downloadFile = createAsyncThunk<void, { id: string; name: string }>(
   }
 );
 
+const uploadAvatar = createAsyncThunk<Promise<User>, File>(
+  `${stateName}/avatar`,
+  async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const result = await API.post('file/avatar', formData, {
+      timeout: 0
+    });
+    return result.data;
+  }
+);
+
+const deleteAvatar = createAsyncThunk<Promise<User>>(
+  `${stateName}/avatar`,
+  async () => {
+    const result = await API.delete('file/avatar');
+    return result.data;
+  }
+);
+
 export const thunks = {
   getFiles,
   createDir,
   uploadFile,
   downloadFile,
-  deleteFile
+  deleteFile,
+  uploadAvatar,
+  deleteAvatar
 };
 
 export const extraActions: FileExtraReducerFunction = (builder) => {

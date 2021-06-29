@@ -1,6 +1,7 @@
 import path from 'path';
 import { mkdir, rm } from 'fs/promises';
 import { UploadedFile } from 'express-fileupload';
+import { v4 } from 'uuid';
 
 import config from 'config';
 
@@ -13,9 +14,12 @@ import RequestError from 'errors/RequestError';
 
 class FileService {
   private readonly userFileDir: string;
+  private readonly avatarDir: string;
+  private readonly allowsAvatarExts: string[] = ['jpg', 'jpeg', 'png'];
 
-  constructor(userFileDir: string) {
+  constructor(userFileDir: string, avatarDir: string) {
     this.userFileDir = userFileDir;
+    this.avatarDir = avatarDir;
   }
 
   public async getDirectories(
@@ -156,6 +160,29 @@ class FileService {
 
     return filePath;
   }
+
+  public async uploadAvatar(avatar: UploadedFile | undefined): Promise<string> {
+    if (!avatar) {
+      throw new RequestError('Avatar not received', 400);
+    }
+
+    const ext = avatar.name.split('.').pop();
+    if (!this.allowsAvatarExts.includes(ext || '')) {
+      throw new RequestError('Не верное расширение файла', 400);
+    }
+
+    const avatarName = `${v4()}.${avatar.name.split('.').pop()}`;
+    await avatar.mv(path.resolve(this.avatarDir, avatarName));
+
+    return avatarName;
+  }
+
+  public async deleteAvatar(avatarName: string): Promise<void> {
+    await rm(path.resolve(this.avatarDir, avatarName));
+  }
 }
 
-export default new FileService(config.get<string>('userFileDir'));
+export default new FileService(
+  config.get<string>('userFileDir'),
+  config.get<string>('avatarsDir')
+);
