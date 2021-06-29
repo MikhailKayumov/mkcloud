@@ -1,12 +1,15 @@
 {
   "watch": [
     "config/**/*",
-    "models/**/*",
     "controllers/**/*",
+    "dot/**/*",
+    "errors/**/*",
     "middleware/**/*",
-    "services/**/*",
-    "utils/**/*",
+    "models/**/*",
     "routes/**/*",
+    "services/**/*",
+    "static/**/*",
+    "utils/**/*",
     "index.ts"
   ],
   "ignore": [

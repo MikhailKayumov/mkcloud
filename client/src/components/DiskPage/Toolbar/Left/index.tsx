@@ -8,7 +8,7 @@ import { FlexBox } from 'utils/components/FlexBox';
 import { Input } from 'utils/components/Input';
 import { useUploadFiles } from '../../Uploader/useUploadFiles';
 
-export const Left: React.FC = React.memo((): JSX.Element => {
+export const Left: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -19,7 +19,7 @@ export const Left: React.FC = React.memo((): JSX.Element => {
   const [inputValue, setInputValue] = useState(searchValue);
 
   const onCreateDir = () => {
-    dispatch(fileActions.toggleCreateDirPopupDisplay(true));
+    dispatch(fileActions.startCreatingDir());
   };
   const onBackDir = () => {
     dispatch(fileActions.popFromStack());
@@ -75,4 +75,4 @@ export const Left: React.FC = React.memo((): JSX.Element => {
       />
     </FlexBox>
   );
-});
+};

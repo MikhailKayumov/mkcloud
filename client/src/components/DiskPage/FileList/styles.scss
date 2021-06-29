@@ -42,10 +42,10 @@
 }
 
 .file-enter-active {
-  animation: file-anim 500ms ease-in-out forwards;
+  animation: file-anim 400ms ease-in-out forwards;
 }
 .file-exit-active {
-  animation: file-anim 500ms ease-in-out forwards reverse;
+  animation: file-anim 400ms ease-in-out forwards reverse;
 }
 
 @keyframes file-anim {

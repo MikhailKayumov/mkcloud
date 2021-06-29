@@ -7,7 +7,7 @@ import { fileSelectors, fileThunks } from 'store/file';
 
 import { Header } from './Header';
 import { FileList } from './FileList';
-import { CreateDirPopup } from './CreateDirPopup';
+import { CreateDirPopup } from './CreateDirPopup/';
 import { Uploader } from './Uploader';
 
 import './styles.scss';
@@ -24,14 +24,14 @@ export const Disk: React.FC = (): JSX.Element => {
 
   const [dragEnter, setDragEnter] = useState(false);
 
-  useEffect(() => {
-    dispatch(fileThunks.getFiles({ dirId: currentDir, searchName: '' }));
-  }, [currentDir, dispatch]);
-  useEffect(() => {
+  // useEffect(() => {
+  //   dispatch(fileThunks.getFiles({ dirId: currentDir, searchName: '' }));
+  // }, [currentDir, dispatch]);
+  /*useEffect(() => {
     if (searchName.length > 2 || !searchName) {
       dispatch(fileThunks.getFiles({ dirId: currentDir, searchName }));
     }
-  }, [currentDir, dispatch, searchName]);
+  }, [currentDir, dispatch, searchName]);*/
 
   const onDragEnter = (e: React.DragEvent) => {
     e.preventDefault();

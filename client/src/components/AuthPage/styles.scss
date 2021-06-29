@@ -1,0 +1,38 @@
+@use '../../utils/styles/_colors' as c;
+
+.auth_form {
+  width: 500px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 30px;
+  align-self: center;
+  margin-top: 100px;
+
+  &__title {
+    font-size: 30px;
+    line-height: 34px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  &__body {
+    margin: 24px 0;
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      margin: 8px 0;
+      transition: transform 0.14s ease-in-out;
+      &::placeholder {
+        color: #9b9b9b;
+        transition: color 0.12s ease-in;
+      }
+      &:hover, &:focus {
+        &::placeholder {
+          color: #d4d4d4;
+        }
+      }
+    }
+  }
+
+  &__footer {}
+}

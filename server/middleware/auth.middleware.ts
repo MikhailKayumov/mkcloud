@@ -1,27 +1,26 @@
-import { NextFunction, Request } from 'express';
-import { verify } from 'jsonwebtoken';
-import config from 'config';
-import { LoginRes } from '../routes/types';
-import { ObjectId } from 'mongodb';
+import { NextFunction, Response } from 'express';
+import { BodyRequest } from 'controllers/types';
+import RequestError from 'errors/RequestError';
+import TokenService from 'services/TokenService';
 
-export const auth = (
-  req: Request<{ userId: ObjectId }>,
-  res: LoginRes,
+export const authMiddleware = (
+  req: BodyRequest,
+  res: Response,
   next: NextFunction
-): void | LoginRes => {
-  if (req.method === 'OPTIONS') next();
+): void | Response<{ message: string }> => {
+  if (req.method === 'OPTIONS') return next();
 
-  try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token || token === 'null') {
-      return res.status(401).json({ message: 'Auth error' });
-    }
+  const token = req.headers.authorization?.split(' ')[1];
 
-    const decoded = verify(token, config.get('secretKey')) as { id: string };
-    req.params.userId = new ObjectId(decoded.id);
-
-    next();
-  } catch (e) {
-    console.log(e);
+  if (!token || token === 'null') {
+    return next(RequestError.unauthorizedError());
   }
+
+  const decoded = TokenService.validateAccessToken(token);
+  if (!decoded) {
+    return next(RequestError.unauthorizedError());
+  }
+
+  req.body.jwt = decoded;
+  next();
 };

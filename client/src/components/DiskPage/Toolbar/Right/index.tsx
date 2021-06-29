@@ -12,7 +12,7 @@ import View1 from 'assets/img/view1.svg';
 import View2 from 'assets/img/view2.svg';
 import View3 from 'assets/img/view3.svg';
 
-export const Right: React.FC = React.memo((): JSX.Element => {
+export const Right: React.FC = (): JSX.Element => {
   const dispatch = useDispatch();
 
   const sortBy = useSelector(fileSelectors.sortBy);
@@ -78,4 +78,4 @@ export const Right: React.FC = React.memo((): JSX.Element => {
       {filesViewBtns}
     </FlexBox>
   );
-});
+};

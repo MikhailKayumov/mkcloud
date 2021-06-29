@@ -1,5 +1,6 @@
 node_modules
 build
+userFiles
 
 tsconfig.json
 package.json
