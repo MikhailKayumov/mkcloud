@@ -14,7 +14,7 @@ import { corsMiddleware } from 'middleware/cors.middleware';
 import { authMiddleware } from 'middleware/auth.middleware';
 import { errorMiddleware } from 'middleware/error.middleware';
 
-const PORT = config.get<number>('serverPort');
+const PORT = process.env.PORT || config.get<number>('serverPort');
 const DB_URL = config.get<string>('dbUrl');
 const STATIC_PATH = path.resolve('static');
 const AUTH_CHECK_PATHS = [apiPath('file')];
