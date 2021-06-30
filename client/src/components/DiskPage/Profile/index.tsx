@@ -23,7 +23,8 @@ export const Profile: React.FC = React.memo((): JSX.Element | null => {
         if (type === 'file/avatar/fulfilled') {
           dispatch(userActions.setUser(payload as User));
         } else {
-          console.log(payload);
+          // eslint-disable-next-line no-console
+          console.error(payload);
         }
       });
     }
@@ -34,7 +35,8 @@ export const Profile: React.FC = React.memo((): JSX.Element | null => {
         if (type === 'file/avatar/fulfilled') {
           dispatch(userActions.setUser(payload as User));
         } else {
-          console.log(payload);
+          // eslint-disable-next-line no-console
+          console.error(payload);
         }
       });
     }
