@@ -58,7 +58,7 @@ class FileService {
       type: 'dir',
       user: userId
     });
-    await mkdir(this.getPath(dir));
+    await mkdir(this.getPath(dir), { recursive: true });
     return dir;
   }
 
@@ -68,6 +68,16 @@ class FileService {
     parent: ObjectId | undefined
   ): Promise<FileDto> {
     const parentDir = await FileModel.findById(parent);
+
+    const filePath: string = path.resolve(
+      config.get('userFileDir'),
+      userId.toHexString(),
+      parentDir?.path || '',
+      name
+    );
+    if (existsSync(filePath)) {
+      throw new RequestError('Directory already exist', 400);
+    }
 
     const dir = await FileModel.create({
       name: name,
@@ -80,7 +90,7 @@ class FileService {
     parentDir?.children.push(dir._id);
     await parentDir?.save();
 
-    await mkdir(this.getPath(dir));
+    await mkdir(this.getPath(dir), { recursive: true });
 
     return new FileDto(dir);
   }
